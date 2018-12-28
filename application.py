@@ -3,7 +3,7 @@ from flask import Flask, render_template
 # SQLAlchemy modules
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Restaurant, MenuItem
+from database_setup import Base, Provider, Course
 
 app = Flask(__name__)
 
