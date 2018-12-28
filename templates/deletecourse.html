@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Delete Course | MOOC Catalog</title>
+{% endblock %}
+
+{% block content %}
+
+<nav>
+    <ul class="nav-bar">
+        <li><a class="nav-link" href="#">Providers Catalog ></a></li>
+        <li><a class="nav-link" href="#">provider-name ></a></li>
+        <li><a class="nav-link" href="#">course-name ></a></li>
+        <li>Delete Course</li>
+    </ul>
+</nav>
+
+<form action="#">
+    <h2 class="subject-header">Delete a Course</h2>
+    <h3 class="confirm-deletion"><b>Are you sure you want to delete course-name?</b></h3>
+    <div class="delete-buttons">
+        <a class="delete" href="#" target="_blank">Delete Course</a>
+        <a href="#" target="_blank">Cancel</a>
+    </div>
+</form>
+
+{% endblock %}

@@ -4,7 +4,7 @@
 <title>Home | MOOC Catalog</title>
 {% endblock %}
 
-{% block body %}
+{% block content %}
 
 <div class="new-course">
     <a href="#" target="_blank">Add New Course</a>
@@ -13,10 +13,10 @@
 <section class="categories">
     <h2 class="subject-header">Providers Categories</h2>
     <div class="providers">
-        {% for %}
+        {% for x in [1,2,3] %}
         <div class="provider-content">
             <div class="provider-text">
-                <h3 class="provider-title">{{name}}</h3>
+                <h3 class="provider-title">provider-name</h3>
                 <a href="#" target="_blank">View Courses</a>
             </div>
         </div>
@@ -27,10 +27,10 @@
 <section class="items">
     <h2 class="subject-header">Latest Courses</h2>
     <div class="courses">
-        {% for %}
+        {% for x in [2,3,2,3] %}
         <div class="course-content">
             <a href="#">
-                <h4 class="course-title">{{Full Stack Web Developer}} | {{Udacity}}</h4>
+                <h4 class="course-title">course-name | provider-name</h4>
             </a>
         </div>
         {% endfor %}

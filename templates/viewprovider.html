@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>provider-name | MOOC Catalog</title>
+{% endblock %}
+
+{% block content %}
+
+<nav>
+    <ul class="nav-bar">
+        <li><a class="nav-link" href="#">Providers Catalog ></a> </li>
+        <li>provider-name</li>
+    </ul>
+</nav>
+
+<div class="provider-information">
+    <h2 class="subject-header">provider-name</h2>
+    <p class="provider-description">
+        provider-description
+    </p>
+</div>
+
+<section class="items">
+    <h2 class="subject-header">provider-name Courses</h2>
+    <div class="courses">
+        {% for x in [1,2,3,4,5] %}
+        <div class="course-content">
+            <a href="#">
+                <h4 class="course-title">course-name</h4>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}
