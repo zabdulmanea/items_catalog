@@ -1,5 +1,16 @@
+# Flask modules
 from flask import Flask, render_template
+# SQLAlchemy modules
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from database_setup import Base, Restaurant, MenuItem
+
 app = Flask(__name__)
+
+engine = create_engine('sqlite:///providercourses.db?check_same_thread=False')
+Base.metadata.bind = engine
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 
 # view home page
