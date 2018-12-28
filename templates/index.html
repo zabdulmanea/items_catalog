@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Home | MOOC Catalog</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="new-course">
+    <a href="#" target="_blank">Add New Course</a>
+</div>
+
+<section class="categories">
+    <h2 class="subject-header">Providers Categories</h2>
+    <div class="providers">
+        {% for %}
+        <div class="provider-content">
+            <div class="provider-text">
+                <h3 class="provider-title">{{name}}</h3>
+                <a href="#" target="_blank">View Courses</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="items">
+    <h2 class="subject-header">Latest Courses</h2>
+    <div class="courses">
+        {% for %}
+        <div class="course-content">
+            <a href="#">
+                <h4 class="course-title">{{Full Stack Web Developer}} | {{Udacity}}</h4>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}
