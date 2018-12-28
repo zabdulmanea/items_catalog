@@ -8,7 +8,7 @@
 
 <nav>
     <ul class="nav-bar">
-        <li><a class="nav-link" href="#">Providers Catalog></a></li>
+        <li><a class="nav-link" href="{{ url_for('providers') }}">Providers Catalog></a></li>
         <li>Create new Course</li>
     </ul>
 </nav>
@@ -30,8 +30,8 @@
         <textarea placeholder="Describe the course here..." value="course-details"></textarea>
     </div>
     <div class="create-buttons">
-        <a class="create" href="#" target="_blank">Create Course</a>
-        <a class="cancel" href="#" target="_blank">Cancel</a>
+        <a class="create" href="{{ url_for('newCourse') }}">Create Course</a>
+        <a class="cancel" href="{{ url_for('providers') }}">Cancel</a>
     </div>
 </form>
 

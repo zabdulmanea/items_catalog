@@ -7,7 +7,7 @@
 {% block content %}
 
 <div class="new-course">
-    <a href="#" target="_blank">Add New Course</a>
+    <a href="{{ url_for('newCourse') }}">Add New Course</a>
 </div>
 
 <section class="categories">
@@ -17,7 +17,7 @@
         <div class="provider-content">
             <div class="provider-text">
                 <h3 class="provider-title">provider-name</h3>
-                <a href="#" target="_blank">View Courses</a>
+                <a href="{{ url_for('viewProvider', provider_name='temp') }}">View Courses</a>
             </div>
         </div>
         {% endfor %}
@@ -29,7 +29,7 @@
     <div class="courses">
         {% for x in [2,3,2,3] %}
         <div class="course-content">
-            <a href="#">
+            <a href="{{ url_for('viewCourse', provider_name='temp', course_name='temp') }}">
                 <h4 class="course-title">course-name | provider-name</h4>
             </a>
         </div>
