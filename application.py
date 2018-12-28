@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 app = Flask(__name__)
 
 
@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/providers')
 def providers():
-    return "providers page"
+    return render_template('index.html')
 
 
 # view specific MOOC provider
@@ -14,7 +14,7 @@ def providers():
 @app.route('/provider/<string:provider_name>/courses/')
 def viewProvider(provider_name):
     provider_name = "temp"
-    return "courses of provider page"
+    return render_template('viewprovider.html')
 
 
 # view specific MOOC course
@@ -22,28 +22,33 @@ def viewProvider(provider_name):
 def viewCourse(provider_name, course_name):
     provider_name = "temp"
     course_name = "temp"
-    return "Course Information page"
+    return render_template('viewcourse.html')
 
 
-# Create MOOC course
+# create MOOC course
 @app.route('/provider/course/new/', methods=['GET', 'POST'])
 def newCourse():
-    return "Create New Course Page"
+    return render_template('newcourse.html')
 
 
-# Update information of MOOC course
-@app.route('/provider/<string:provider_name>/course/<string:course_name>/edit/', methods=['GET', 'POST'])
+# update information of MOOC course
+@app.route(
+    '/provider/<string:provider_name>/course/<string:course_name>/edit/',
+    methods=['GET', 'POST'])
 def editCourse(provider_name, course_name):
     provider_name = "temp"
     course_name = "temp"
-    return "Update Course Information page"
+    return render_template('editcourse.html')
 
-# Delete specific MOOC course
-@app.route('/provider/<string:provider_name>/course/<string:course_name>/delete/', methods=['GET', 'POST'])
+
+# delete specific MOOC course
+@app.route(
+    '/provider/<string:provider_name>/course/<string:course_name>/delete/',
+    methods=['GET', 'POST'])
 def deleteCourse(provider_name, course_name):
     provider_name = "temp"
     course_name = "temp"
-    return "Delete Course page"
+    return render_template('deletecourse.html')
 
 
 if __name__ == '__main__':
