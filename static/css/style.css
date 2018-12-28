@@ -15,8 +15,8 @@ body {
     color: #433f2b;
     line-height: 1.15;
     background-color: #f1ece9;
-    
 }
+
 html, body, .container {
     height: 100%;
 }
@@ -236,13 +236,115 @@ a:hover, a:active {
     margin-top: 8px;
 }
 
+/***  provider/course page style
+--------------------------------------------------------------------------- ***/
+
+.provider-information, .course-information {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.provider-description, .course-description {
+    color: #75715c;
+    border: 1px solid #bebba8;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px;
+    background-color: #ebe2d1;
+}
+
+/***  course page style
+--------------------------------------------------------------------------- ***/
+
+.course-information .subject-header, .course-information h4 {
+    margin-bottom: 0px;
+    margin-top: 10px;
+}
+
+.course-information h4 {
+    color: #af9571;
+}
+
+.course-description {
+    margin-left: 0px;
+    margin-bottom: 0px;
+}
+
+.delete, .cancel {
+    background-color: darkred;
+}
+
+/***  create course page style
+--------------------------------------------------------------------------- ***/
+
+.form-container {
+    border: 1px solid #b4b097;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px;
+    background-color: #eeece7;
+}
+
+form h2 {
+    margin-bottom: 5px;
+}
+
+form p {
+    color: #959072;
+}
+
+input[type=text], select {
+    margin: 5px 0 22px 0;
+}
+
+select {
+    height: 40px;
+}
+
+textarea {
+    resize: none;
+    margin-top: 5px;
+    height: 10em;
+}
+
+input[type=text], select, textarea {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    background: #f1f1f1;
+    font-size: 12px;
+}
+
+input[type=text]:focus, textarea:focus, select:focus {
+    background-color: #ffffff;
+    outline: none;
+}
+
+.create-buttons {
+    margin: 15px;
+    text-align: right;
+}
+
+
+.confirm-deletion{
+    color: darkred;
+}
+
 /***  footer style
 --------------------------------------------------------------------------- ***/
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
 
 footer p {
     color: #959072;
     text-align: center;
     font-size: 0.9em;
+    margin:0px;
+    margin-bottom:10px;
 }
 
 .heart {
@@ -266,6 +368,7 @@ footer p {
         transform: scale(1);
     }
 }
+
 
 /***  Viewport - at most 600px (1 project per row) 
 --------------------------------------------------------------------------- ***/
@@ -348,21 +451,4 @@ footer p {
     .provider-content {
         width: 49%;
     }
-}
-
-/***  CSS Validator
---------------------------------------------------------------------------- ***/
-
-p, footer {
-    padding: 5px;
-    margin: 0px;
-}
-
-footer {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    text-align: center;
-    
 }
