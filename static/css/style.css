@@ -1,0 +1,368 @@
+/***  Document style
+--------------------------------------------------------------------------- ***/
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    display: block;
+}
+
+body {
+    font-family: "Exo 2", "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 16px;
+    color: #433f2b;
+    line-height: 1.15;
+    background-color: #f1ece9;
+    
+}
+html, body, .container {
+    height: 100%;
+}
+
+.container {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+    position: relative;
+}
+
+/***  Header style
+--------------------------------------------------------------------------- ***/
+
+.header {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    height: 100px;
+}
+
+.logo {
+    max-width: 100px;
+    min-width: 100px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    border: none;
+    vertical-align: middle;
+}
+
+.name-title {
+    text-transform: uppercase;
+    text-align: left;
+}
+
+.name, .title {
+    margin-top: 15px;
+    margin-bottom: 0px;
+    margin-left: 15px;
+}
+
+.name {
+    font-weight: 500;
+}
+
+.title {
+    color: #af9571;
+    font-weight: lighter;
+}
+
+.login {
+    position: absolute;
+    top: 40px;
+    right: 30px;
+}
+
+.login-link {
+    text-align: center;
+    font-weight: bold;
+}
+
+/***  Horizontal line style
+--------------------------------------------------------------------------- ***/
+
+hr {
+    background: linear-gradient(90deg, #f1ece9 0%, #3f2f22 50%, #f1ece9 100%);
+    height: 3px;
+    margin: 10px 0 20px 0;
+    border: 0px;
+}
+
+/***  Navagation section style
+--------------------------------------------------------------------------- ***/
+
+.nav-bar {
+    text-decoration: none;
+    font-style: italic;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    align-items: center;
+    margin: 8px;
+    padding: 0px;
+}
+
+.nav-bar li {
+    padding-right: 5px;
+    font-size: 13px;
+}
+
+.nav-link {
+    text-decoration: none;
+    background-color: transparent;
+    border: 0px;
+    color: #af9571;
+    padding: 0px;
+    margin: 0px;
+}
+
+/***  links style
+--------------------------------------------------------------------------- ***/
+
+a {
+    text-decoration: none;
+    color: #f0e7d7;
+    border: 1px solid rgba(63, 47, 34, 0.5);
+    background-color: #959072;
+    padding: 10px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+a:hover, a:active {
+    text-decoration: underline;
+    background-color: rgba(241, 236, 233, 0.5);
+    color: #959072;
+}
+
+/***  New Course Button style
+--------------------------------------------------------------------------- ***/
+
+.new-course a {
+    width: 100%;
+    text-align: center;
+    background-color: #554637;
+}
+
+.new-course a:hover {
+    background-color: #e9dfcd;
+}
+
+/***  Providers section style
+--------------------------------------------------------------------------- ***/
+
+.providers {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.provider-content {
+    border: 1px solid #959072;
+    border-radius: 10px;
+    flex: 1 0 21%;
+    height: auto;
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 10px;
+    margin: 5px;
+}
+
+.provider-text {
+    vertical-align: middle;
+}
+
+.provider-content:hover {
+    background-color: #e9dfcd;
+    border: 0px;
+}
+
+.provider-title {
+    text-transform: uppercase;
+    padding: 0;
+    margin: 0;
+}
+
+/***  Latest Courses section style
+--------------------------------------------------------------------------- ***/
+
+.courses {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.course-content {
+    border-radius: 10px;
+    flex: 1 0 46%;
+    height: auto;
+    text-align: center;
+    padding-left: 7px;
+    margin: 5px;
+    background-color: #e9dfcd;
+}
+
+.course-content h4 {
+    vertical-align: middle;
+}
+
+.course-content a {
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    background-color: transparent;
+    border: 0;
+    color: #554637;
+}
+
+.course-content a:hover {
+    color: #959072;
+}
+
+.course-content:hover {
+    border: 1px solid #959072;
+    border-radius: 10px;
+    background-color: transparent;
+}
+
+.course-title {
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+
+/***  footer style
+--------------------------------------------------------------------------- ***/
+
+footer p {
+    color: #959072;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.heart {
+    display: inline-block;
+    position: relative;
+    color: #b63434;
+}
+
+.pulse {
+    animation: pulse 1s linear infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1.1);
+    }
+    50% {
+        transform: scale(0.8);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/***  Viewport - at most 600px (1 project per row) 
+--------------------------------------------------------------------------- ***/
+
+@media screen and (max-width: 600px) {
+    .container {
+        width: 100%;
+    }
+    .logo img {
+        width: 80px;
+    }
+    .name {
+        font-size: 1.3em;
+        font-weight: 500;
+    }
+    .title {
+        font-size: 1em;
+        margin-top: 5px;
+    }
+    .login {
+        position: inherit;
+    }
+    .login-link, .login-link a {
+        margin: 0 auto;
+        margin-top: 0px;
+        width: 100%;
+    }
+    .subject-header {
+        font-size: 1.6em;
+    }
+    .providers {
+        flex-flow: column;
+    }
+    .provider-content {
+        width: 100%;
+        height: auto;
+    }
+    .provider-title {
+        font-size: 1.4em;
+    }
+}
+
+/***  Viewport - between 501 and 600px (1 project per row) 
+--------------------------------------------------------------------------- ***/
+
+@media screen and (min-width: 501px) and (max-width: 600px) {
+    .name {
+        font-size: 1.6em;
+        font-weight: 500;
+    }
+    .title {
+        font-size: 1.2em;
+        margin-top: 10px;
+    }
+    .logo img {
+        width: 90px;
+    }
+    .provider-content {
+        display: flex;
+        align-items: center;
+    }
+    .provider-title {
+        margin-top: 0px;
+    }
+    .provider-text {
+        width: 70%;
+    }
+}
+
+/***  Viewport - between 601px and 830px (2 providers per row) 
+--------------------------------------------------------------------------- ***/
+
+@media screen and (min-width: 601px) and (max-width: 900px) {
+    .providers {
+        display: flex;
+        flex-flow: row wrap;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .provider-content {
+        width: 49%;
+    }
+}
+
+/***  CSS Validator
+--------------------------------------------------------------------------- ***/
+
+p, footer {
+    padding: 5px;
+    margin: 0px;
+}
+
+footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    
+}
