@@ -24,7 +24,8 @@ def providers():
     latest_courses = session.query(
         Provider.name.label('provider_name'),
         Course.name.label('course_name')).filter(
-            Course.provider_id == Provider.id).order_by(Course.id.desc()).limit(10)
+            Course.provider_id == Provider.id).order_by(
+                Course.id.desc()).limit(10)
 
     return render_template(
         'index.html', providers=all_providers, latest_courses=latest_courses)
@@ -44,14 +45,15 @@ def viewProvider(provider_name):
 @app.route('/provider/<string:provider_name>/course/<string:course_name>/')
 def viewCourse(provider_name, course_name):
     course = session.query(Course).filter_by(name=course_name).one()
-    return render_template('viewcourse.html', provider_name = provider_name, course=course)
+    return render_template(
+        'viewcourse.html', provider_name=provider_name, course=course)
 
 
 # create MOOC course
 @app.route('/provider/course/new/', methods=['GET', 'POST'])
 def newCourse():
     if request.method == 'POST':
-        # get the selected proveder from the dropdown list
+        # get the selected provider from the dropdown list
         courseProvider = session.query(Provider).filter_by(
             id=request.form.get('selected-provider')).one()
         # create a new provider course
@@ -73,9 +75,33 @@ def newCourse():
     '/provider/<string:provider_name>/course/<string:course_name>/edit/',
     methods=['GET', 'POST'])
 def editCourse(provider_name, course_name):
-    provider_name = "temp"
-    course_name = "temp"
-    return render_template('editcourse.html')
+    # Get the course you want to update
+    course = session.query(Course).filter_by(name=course_name).one()
+    if request.method == 'POST':
+        # get the selected provider from the dropdown list
+        courseProvider = session.query(Provider).filter_by(
+            id=request.form.get('selected-provider')).one()
+
+        course.name = request.form['course_name']
+        course.description = request.form['course-description']
+        course.provider = courseProvider
+
+        session.add(course)
+        session.commit()
+
+        # redirect to the course page
+        return redirect(
+            url_for(
+                'viewCourse',
+                provider_name=courseProvider.name,
+                course_name=course_name))
+    else:
+        all_providers = session.query(Provider).all()
+        return render_template(
+            'editcourse.html',
+            providers=all_providers,
+            provider_name=provider_name,
+            course=course)
 
 
 # delete specific MOOC course
@@ -83,9 +109,16 @@ def editCourse(provider_name, course_name):
     '/provider/<string:provider_name>/course/<string:course_name>/delete/',
     methods=['GET', 'POST'])
 def deleteCourse(provider_name, course_name):
-    provider_name = "temp"
-    course_name = "temp"
-    return render_template('deletecourse.html')
+    if request.method == 'POST':
+        course = session.query(Course).filter_by(name=course_name).one()
+        session.delete(course)
+        session.commit()
+        return redirect(url_for('viewProvider', provider_name=provider_name))
+    else:
+        return render_template(
+            'deletecourse.html',
+            provider_name=provider_name,
+            course_name=course_name)
 
 
 if __name__ == '__main__':
