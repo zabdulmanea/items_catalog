@@ -18,18 +18,23 @@ session = DBSession()
 @app.route('/providers')
 def providers():
     all_providers = session.query(Provider).all()
-    for provider in all_providers:
-        print provider.name
-        print provider.description
-    return render_template('index.html', providers = all_providers)
+    # join_courses_providers = session.query(Course).join(Provider).filter(Course.provider_id==Provider.id).all()
+    # result = session.execute('SELECT * FROM Course JOIN Provider ON Course.provider_id = Provider.id')
+    # for _r in result:
+    #     print(_r)
+    latest_courses = session.query(Course).order_by(Course.id.desc()).limit(10)
+    # for course in latest_courses:
+    #     print course.name
+    return render_template('index.html', providers=all_providers, latest_courses = latest_courses)
 
 
 # view specific MOOC provider
 @app.route('/provider/<string:provider_name>/')
 @app.route('/provider/<string:provider_name>/courses/')
 def viewProvider(provider_name):
-    provider_name = "temp"
-    return render_template('viewprovider.html')
+    provider = session.query(Provider).filter_by(name=provider_name).one()
+    courses = session.query(Course).filter_by(provider_id=provider.id).all()
+    return render_template('viewprovider.html', provider = provider, courses = courses)
 
 
 # view specific MOOC course
