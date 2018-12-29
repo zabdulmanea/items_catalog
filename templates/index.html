@@ -29,7 +29,7 @@
     <div class="courses">
         {% for course in latest_courses %}
         <div class="course-content">
-            <a href="{{ url_for('viewCourse', provider_name='{{ provider.name }}', course_name='{{ course.course_name }}') }}">
+            <a href="{{ url_for('viewCourse', provider_name=course.provider_name, course_name=course.course_name) }}">
                 <h4 class="course-title">{{ course.course_name }} | {{ course.provider_name }}</h4>
             </a>
         </div>

@@ -43,9 +43,8 @@ def viewProvider(provider_name):
 # view specific MOOC course
 @app.route('/provider/<string:provider_name>/course/<string:course_name>/')
 def viewCourse(provider_name, course_name):
-    provider_name = "temp"
-    course_name = "temp"
-    return render_template('viewcourse.html')
+    course = session.query(Course).filter_by(name=course_name).one()
+    return render_template('viewcourse.html', provider_name = provider_name, course=course)
 
 
 # create MOOC course

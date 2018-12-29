@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-<title>course-name - provider-name | MOOC Catalog</title>
+<title>{{ course.name }} - {{ provider_name }} | MOOC Catalog</title>
 {% endblock %}
 
 {% block content %}
@@ -9,22 +9,25 @@
 <nav>
     <ul class="nav-bar">
         <li><a class="nav-link" href="{{ url_for('providers') }}">Providers Catalog ></a> </li>
-        <li><a class="nav-link" href="{{ url_for('viewProvider', provider_name='temp') }}">provider-name ></a> </li>
-        <li>course-name</li>
+        <li><a class="nav-link" href="{{ url_for('viewProvider', provider_name=provider_name) }}">{{
+                provider_name }} Provider ></a> </li>
+        <li>{{ course.name }} Course</li>
     </ul>
 </nav>
 
 <div class="course-information ">
-    <h2 class="subject-header">course-name</h2>
-    <h4>-- provider-name --</h>
+    <h2 class="subject-header">{{ course.name }}</h2>
+    <h4>-- {{ provider_name }} --</h>
         <p class="course-description">
-            course-escription
+            {{ course.description }}
         </p>
 </div>
 
 <div class="buttons">
-    <a class="edit" href="{{ url_for('editCourse', provider_name='temp', course_name='temp') }}">Edit Course</a>
-    <a class="delete" href="{{ url_for('deleteCourse', provider_name='temp', course_name='temp') }}">Delete Course</a>
+    <a class="edit" href="{{ url_for('editCourse', provider_name=provider_name, course_name=course.name) }}">Edit
+        Course</a>
+    <a class="delete" href="{{ url_for('deleteCourse', provider_name=provider_name, course_name=course.name) }}">Delete
+        Course</a>
 </div>
 
 {% endblock %}

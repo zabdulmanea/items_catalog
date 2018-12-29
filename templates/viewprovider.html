@@ -25,7 +25,7 @@
     <div class="courses">
         {% for course in courses %}
         <div class="course-content">
-            <a href="{{ url_for('viewCourse', provider_name='temp', course_name='temp') }}">
+            <a href="{{ url_for('viewCourse', provider_name=provider.name, course_name=course.name) }}">
                 <h4 class="course-title">{{ course.name }}</h4>
             </a>
         </div>
