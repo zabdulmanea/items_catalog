@@ -29,7 +29,8 @@ def viewLogin():
         for x in xrange(32))
     # Set a login session state token
     login_session['state'] = state
-    return "The current session state is %s" % login_session['state']
+    # render login page
+    return render_template('login.html')
 
 
 # ------------------- App Pages -------------------------
@@ -46,7 +47,7 @@ def providers():
         Course.name.label('course_name')).filter(
             Course.provider_id == Provider.id).order_by(
                 Course.id.desc()).limit(10)
-
+    # render Home page
     return render_template(
         'index.html', providers=all_providers, latest_courses=latest_courses)
 
@@ -57,6 +58,7 @@ def providers():
 def viewProvider(provider_name):
     provider = session.query(Provider).filter_by(name=provider_name).one()
     courses = session.query(Course).filter_by(provider_id=provider.id).all()
+    # render MOOC provider page
     return render_template(
         'viewprovider.html', provider=provider, courses=courses)
 
@@ -65,6 +67,7 @@ def viewProvider(provider_name):
 @app.route('/provider/<string:provider_name>/course/<string:course_name>/')
 def viewCourse(provider_name, course_name):
     course = session.query(Course).filter_by(name=course_name).one()
+    # render course provider page
     return render_template(
         'viewcourse.html', provider_name=provider_name, course=course)
 
@@ -87,6 +90,7 @@ def newCourse():
         return redirect(url_for('providers'))
     else:
         all_providers = session.query(Provider).all()
+        # render creating course page
         return render_template('newcourse.html', providers=all_providers)
 
 
@@ -117,6 +121,7 @@ def editCourse(provider_name, course_name):
                 course_name=course_name))
     else:
         all_providers = session.query(Provider).all()
+        # render updating course page
         return render_template(
             'editcourse.html',
             providers=all_providers,
@@ -133,8 +138,10 @@ def deleteCourse(provider_name, course_name):
         course = session.query(Course).filter_by(name=course_name).one()
         session.delete(course)
         session.commit()
+        # redirect to the provider page
         return redirect(url_for('viewProvider', provider_name=provider_name))
     else:
+        # render deleting course page
         return render_template(
             'deletecourse.html',
             provider_name=provider_name,

@@ -174,12 +174,12 @@ button, input[type="submit"], input[type="reset"] {
 /***  Providers section style
 --------------------------------------------------------------------------- ***/
 
-.providers, .login {
+.providers, .login-options {
     display: flex;
     flex-wrap: wrap;
 }
 
-.provider-content {
+.provider-content, .login-content {
     border: 1px solid #959072;
     border-radius: 10px;
     flex: 1 0 21%;
@@ -200,9 +200,15 @@ button, input[type="submit"], input[type="reset"] {
 }
 
 .provider-title{
+    margin: 0;
+}
+.provider-title, .login-title{
     text-transform: uppercase;
     padding: 0;
-    margin: 0;
+}
+
+.login-title {
+    margin:13px;
 }
 
 /***  Latest Courses section style
@@ -387,16 +393,6 @@ footer p {
 /***  Login page Style 
 --------------------------------------------------------------------------- ***/
 
-.login-content {
-    border: 1px solid #959072;
-    border-radius: 10px;
-    flex: 1 0 45%;
-    height: auto;
-    text-align: center;
-    padding: 20px;
-    margin-bottom: 10px;
-    margin: 5px;
-}
 
 /***  Viewport - at most 600px (1 project per row) 
 --------------------------------------------------------------------------- ***/
@@ -427,14 +423,14 @@ footer p {
     .subject-header {
         font-size: 1.6em;
     }
-    .providers, .login {
+    .providers, .login-options {
         flex-flow: column;
     }
     .provider-content, .login-content {
         width: 100%;
         height: auto;
     }
-    .provider-title {
+    .provider-title, .login-title {
         font-size: 1.4em;
     }
 }
@@ -458,7 +454,7 @@ footer p {
         display: flex;
         align-items: center;
     }
-    .provider-title {
+    .provider-title, .login-title {
         margin-top: 0px;
     }
     .provider-text, .login-text {
@@ -470,7 +466,7 @@ footer p {
 --------------------------------------------------------------------------- ***/
 
 @media screen and (min-width: 601px) and (max-width: 900px) {
-    .providers, .login {
+    .providers, .login-options {
         display: flex;
         flex-flow: row wrap;
         flex-direction: row;

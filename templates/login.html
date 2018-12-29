@@ -3,29 +3,39 @@
 {% block title %}
 <title>Login | MOOC Catalog</title>
 {% endblock %}
+{% block script %}
+<!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="//apis.google.com/js/platform.js?onload=start"></script>
+<!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
+{% endblock %}
 
 {% block content %}
 
 <section class="login-section">
     <h2 class="subject-header">Login Options</h2>
-    <div class="login">
-
+    <div class="login-options">
+        {% for x in [1,2] %}
         <div class="login-content">
-            
+            <div class="login-text">
+                <h3 class="login-title">GOOGLE SIGN IN </h3>
+                <!--HOLD GOOGLE SIGN IN BUTTON-->
+                <div id="signinButton">
+                    <span class="g-signin"
+                    data-scope="openid email"
+                    data-clientid="819955292124-8sc9l6gbgo6cr6il7u4h2kebppbk0sur.apps.googleusercontent.com.apps.googleusercontent.com"
+                    data-redirecturi="postmessage" 
+                    data-accesstype="offline" 
+                    data-cookiepolicy="single_host_origin"
+                    data-callback="signInCallback" 
+                    data-approvalprompt="force">
+                    </span>
+                </div>
+                <!-- END HOLD GOOGLE SIGN IN BUTTON -->
+            </div>
         </div>
-
-        <div class="login-content">
-            
-        </div>
-
+        {% endfor %}
     </div>
 </section>
-
-
-<style>
-    footer {
-        position: static;
-    }
-</style>
 
 {% endblock %}
