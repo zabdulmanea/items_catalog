@@ -174,7 +174,7 @@ button, input[type="submit"], input[type="reset"] {
 /***  Providers section style
 --------------------------------------------------------------------------- ***/
 
-.providers {
+.providers, .login {
     display: flex;
     flex-wrap: wrap;
 }
@@ -190,16 +190,16 @@ button, input[type="submit"], input[type="reset"] {
     margin: 5px;
 }
 
-.provider-text {
+.provider-text, .login-text {
     vertical-align: middle;
 }
 
-.provider-content:hover {
+.provider-content:hover, .login-content:hover {
     background-color: #e9dfcd;
     border: 0px;
 }
 
-.provider-title {
+.provider-title{
     text-transform: uppercase;
     padding: 0;
     margin: 0;
@@ -383,6 +383,21 @@ footer p {
     }
 }
 
+
+/***  Login page Style 
+--------------------------------------------------------------------------- ***/
+
+.login-content {
+    border: 1px solid #959072;
+    border-radius: 10px;
+    flex: 1 0 45%;
+    height: auto;
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 10px;
+    margin: 5px;
+}
+
 /***  Viewport - at most 600px (1 project per row) 
 --------------------------------------------------------------------------- ***/
 
@@ -412,10 +427,10 @@ footer p {
     .subject-header {
         font-size: 1.6em;
     }
-    .providers {
+    .providers, .login {
         flex-flow: column;
     }
-    .provider-content {
+    .provider-content, .login-content {
         width: 100%;
         height: auto;
     }
@@ -439,14 +454,14 @@ footer p {
     .logo img {
         width: 90px;
     }
-    .provider-content {
+    .provider-content, .login-content {
         display: flex;
         align-items: center;
     }
     .provider-title {
         margin-top: 0px;
     }
-    .provider-text {
+    .provider-text, .login-text {
         width: 70%;
     }
 }
@@ -455,13 +470,13 @@ footer p {
 --------------------------------------------------------------------------- ***/
 
 @media screen and (min-width: 601px) and (max-width: 900px) {
-    .providers {
+    .providers, .login {
         display: flex;
         flex-flow: row wrap;
         flex-direction: row;
         justify-content: space-between;
     }
-    .provider-content {
+    .provider-content, .login-content {
         width: 49%;
     }
 }
