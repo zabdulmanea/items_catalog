@@ -1,9 +1,15 @@
 # Web Server modules
 from flask import Flask, render_template, request, redirect, url_for
+
 # Database modules
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Provider, Course
+
+# OAuth modules to generate unique session token
+from flask import session as login_session
+import random
+import string
 
 app = Flask(__name__)
 
@@ -13,6 +19,20 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
+# ------------------- LOGIN -------------------------
+# view login page
+@app.route('/login')
+def viewLogin():
+    # generate a random anti-forgery state token mixed of letters and digits
+    state = ''.join(
+        random.choice(string.ascii_uppercase + string.digits)
+        for x in xrange(32))
+    # Set a login session state token
+    login_session['state'] = state
+    return "The current session state is %s" % login_session['state']
+
+
+# ------------------- App Pages -------------------------
 # view home page
 @app.route('/')
 @app.route('/providers')
@@ -121,6 +141,8 @@ def deleteCourse(provider_name, course_name):
             course_name=course_name)
 
 
+# ------------------- Main -------------------------
 if __name__ == '__main__':
+    app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=8000)
