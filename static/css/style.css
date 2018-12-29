@@ -126,7 +126,7 @@ hr {
 /***  links style
 --------------------------------------------------------------------------- ***/
 
-a {
+a  {
     text-decoration: none;
     color: #f0e7d7;
     border: 1px solid rgba(63, 47, 34, 0.5);
@@ -137,10 +137,25 @@ a {
     margin-top: 10px;
 }
 
-a:hover, a:active {
+a:hover, a:active, input[type=submit]:hover, input[type=submit]:active {
     text-decoration: underline;
     background-color: rgba(241, 236, 233, 0.5);
     color: #959072;
+}
+
+button, input[type="submit"], input[type="reset"] {
+	font: inherit;
+	cursor: pointer;
+    outline: inherit;
+    text-decoration: none;
+    color: #f0e7d7;
+    border: 1px solid rgba(63, 47, 34, 0.5);
+    background-color: #959072;
+    padding: 10px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-top: 10px;
+    
 }
 
 /***  New Course Button style

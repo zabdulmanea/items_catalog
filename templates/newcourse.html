@@ -6,6 +6,7 @@
 
 {% block content %}
 
+
 <nav>
     <ul class="nav-bar">
         <li><a class="nav-link" href="{{ url_for('providers') }}">Providers Catalog></a></li>
@@ -13,24 +14,26 @@
     </ul>
 </nav>
 
-<form method="post">
+<form method="post" name="Form">
     <h2 class="subject-header">Create a Course</h2>
     <p>Please fill in this form to create a course.</p>
     <div class="form-container">
         <label for="course-name"><b>Course Name</b></label>
-        <input type="text" placeholder="Enter Course Name" name="email" required>
+        <input type="text" placeholder="Enter Course Name" name="course_name" required>
 
         <label for="provider-name"><b>Course Provider Name</b></label>
-        <select>
+        <select name="selected-provider" required>
             <option disabled selected value> -- Select Provider -- </option>
-            <option value="1">Volvo</option>
+            {% for provider in providers %}
+            <option value="{{ provider.id }}">{{ provider.name }} </option>
+            {% endfor %}
         </select>
 
         <label for="course-description"><b>Course Description</b></label>
-        <textarea placeholder="Describe the course here..." value="course-details"></textarea>
+        <textarea placeholder="Describe the course here..." name="course-description"></textarea>
     </div>
     <div class="create-buttons">
-        <a class="create" href="{{ url_for('newCourse') }}">Create Course</a>
+        <input class="create" type="submit" value="Create Course" >
         <a class="cancel" href="{{ url_for('providers') }}">Cancel</a>
     </div>
 </form>
@@ -40,4 +43,5 @@
         position: static;
     }
 </style>
+
 {% endblock %}

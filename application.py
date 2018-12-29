@@ -1,5 +1,5 @@
 # Web Server modules
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 # Database modules
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -48,7 +48,18 @@ def viewCourse(provider_name, course_name):
 # create MOOC course
 @app.route('/provider/course/new/', methods=['GET', 'POST'])
 def newCourse():
-    return render_template('newcourse.html')
+    if request.method == 'POST':
+        courseProvider = session.query(Provider).filter_by(id=request.form.get('selected-provider')).one()
+        newCourse = Course(
+            name=request.form['course_name'], description=request.form['course-description'], provider = courseProvider)
+        session.add(newCourse)
+        session.commit()
+        return redirect(url_for('providers'))
+    else:
+        all_providers = session.query(Provider).all()
+        return render_template('newcourse.html', providers = all_providers)
+
+    
 
 
 # update information of MOOC course
