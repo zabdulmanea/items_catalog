@@ -3,11 +3,52 @@
 {% block title %}
 <title>Login | MOOC Catalog</title>
 {% endblock %}
+
 {% block script %}
-<!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
+<!-- LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="//apis.google.com/js/platform.js?onload=start"></script>
 <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
+
+<!-- MAKE A SIGNIN Callback METHOD -->
+<script>
+    function signInCallback(auth_result) {
+        // check if authorization with GOOGLE API server is successful
+        // and one time use code is present
+        if (auth_result['code']) {
+            // hide the sign-in button
+            $('#signinButton').attr('style', 'display: none');
+            // create an Ajax call that sends the one-time-use code from the client to the server, 
+            // if the server responds, write a 'login successful' message to the web page 
+            // and then redirect back to the main providers page
+            $.ajax({
+                type: 'POST',
+                url: '/gconnect?state={{ STATE }}',
+                processData: false,
+                data: auth_result['code'],
+                contentType: 'application/octet-stream; charset=utf-8',
+                success: function (result) {
+                    // return a successful login message to the user
+                    // then redierect to the providers main page after 4 seconds
+                    if (result) {
+                        $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
+                        setTimeout(function () {
+                            window.location.href = "/restaurant";
+                        }, 4000);
+
+                    } else if (auth_result['error']) {
+                        console.log('There was an error: ' + auth_result['error']);
+                    } else {
+                        $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                    }
+                }
+
+            });
+        }
+    }
+</script>
+<!-- END MAKE A Callback METHOD -->
+
 {% endblock %}
 
 {% block content %}
@@ -19,16 +60,11 @@
         <div class="login-content">
             <div class="login-text">
                 <h3 class="login-title">GOOGLE SIGN IN </h3>
-                <!--HOLD GOOGLE SIGN IN BUTTON-->
+                <!-- HOLD GOOGLE SIGN IN BUTTON -->
                 <div id="signinButton">
-                    <span class="g-signin"
-                    data-scope="openid email"
-                    data-clientid="819955292124-8sc9l6gbgo6cr6il7u4h2kebppbk0sur.apps.googleusercontent.com.apps.googleusercontent.com"
-                    data-redirecturi="postmessage" 
-                    data-accesstype="offline" 
-                    data-cookiepolicy="single_host_origin"
-                    data-callback="signInCallback" 
-                    data-approvalprompt="force">
+                    <span class="g-signin" data-scope="openid email" data-clientid="819955292124-8sc9l6gbgo6cr6il7u4h2kebppbk0sur.apps.googleusercontent.com.apps.googleusercontent.com"
+                        data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin"
+                        data-callback="signInCallback" data-approvalprompt="force">
                     </span>
                 </div>
                 <!-- END HOLD GOOGLE SIGN IN BUTTON -->
@@ -36,6 +72,7 @@
         </div>
         {% endfor %}
     </div>
+    <div id="result"></div>
 </section>
 
 {% endblock %}

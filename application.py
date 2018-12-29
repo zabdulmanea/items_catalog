@@ -24,13 +24,13 @@ session = DBSession()
 @app.route('/login')
 def viewLogin():
     # generate a random anti-forgery state token mixed of letters and digits
-    state = ''.join(
+    state_token = ''.join(
         random.choice(string.ascii_uppercase + string.digits)
         for x in xrange(32))
     # Set a login session state token
-    login_session['state'] = state
+    login_session['state'] = state_token
     # render login page
-    return render_template('login.html')
+    return render_template('login.html', STATE=state_token)
 
 
 # ------------------- App Pages -------------------------
