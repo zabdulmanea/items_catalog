@@ -393,7 +393,11 @@ footer p {
 /***  Login page Style 
 --------------------------------------------------------------------------- ***/
 .result{
-    color: darkred;
+    color: green;
+}
+
+.dot-img{
+    height: 40px;
 }
 
 /***  Viewport - at most 600px (1 project per row) 

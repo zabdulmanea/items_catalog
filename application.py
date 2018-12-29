@@ -45,8 +45,8 @@ def viewLogin():
     return render_template('login.html', STATE=state_token)
 
 
-# Create G-connect page that accepts one-time code
-# and handle the code sent back from the callback method 
+# Create G-connect that accepts one-time code
+# and handle the code sent back from the callback method
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # ensure the user is making the request by validate state token
@@ -97,16 +97,15 @@ def gconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    # check is the user is already logged in 
+    # check is the user is already logged in
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(
-            json.dumps('You are already connected.'), 200)
+        response = make_response(json.dumps('You are already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    # store the access token in the login session 
+    # store the access token in the login session
     login_session['access_token'] = credentials.access_token
     login_session['gplus_id'] = gplus_id
 
@@ -127,10 +126,51 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 90px; height: 90px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
+
+# create G-disconnect 
+# revoke a current user's token and reset their login_session
+@app.route('/gdisconnect')
+def gdisconnect():
+    # execute HTTP request to revoke current token 
+    access_token = login_session.get('access_token')
+    if access_token is None:
+        response = make_response(
+            json.dumps('You are not connected.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    print 'In gdisconnect access token is %s', access_token
+    print 'User name is: '
+    print login_session['username']
+
+    # revoking token using google url
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session[
+        'access_token']
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+
+    print 'result is '
+    print result
+    
+    if result['status'] == '200':
+        # reset the user login_session
+        del login_session['access_token']
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        response = make_response(json.dumps('Successfully disconnected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    else:
+        response = make_response(
+            json.dumps('Failed to revoke token for given user.', 400))
+        response.headers['Content-Type'] = 'application/json'
+        return response
 
 
 # ------------------- App Pages -------------------------

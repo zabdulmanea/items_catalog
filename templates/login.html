@@ -31,7 +31,7 @@
                     // return a successful login message to the user
                     // then redierect to the providers main page after 4 seconds
                     if (result) {
-                        $('#result').html('Login Successful!</br>' + result + '</br><img src="static/images/Ellipsis-1.8s-200px.gif">')
+                        $('#result').html('Login Successful!</br>' + result + '</br><img class="dot-img" src="static/images/Ellipsis-1.8s-200px.gif">')
                         setTimeout(function () {
                             window.location.href = "/providers";
                         }, 4000);
