@@ -1,6 +1,6 @@
-# Flask modules
+# Web Server modules
 from flask import Flask, render_template
-# SQLAlchemy modules
+# Database modules
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Provider, Course
@@ -17,7 +17,11 @@ session = DBSession()
 @app.route('/')
 @app.route('/providers')
 def providers():
-    return render_template('index.html')
+    all_providers = session.query(Provider).all()
+    for provider in all_providers:
+        print provider.name
+        print provider.description
+    return render_template('index.html', providers = all_providers)
 
 
 # view specific MOOC provider

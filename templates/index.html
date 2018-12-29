@@ -13,11 +13,11 @@
 <section class="categories">
     <h2 class="subject-header">Providers Categories</h2>
     <div class="providers">
-        {% for x in [1,2,3] %}
+        {% for provider in providers %}
         <div class="provider-content">
             <div class="provider-text">
-                <h3 class="provider-title">provider-name</h3>
-                <a href="{{ url_for('viewProvider', provider_name='temp') }}">View Courses</a>
+                <h3 class="provider-title">{{provider.name}}</h3>
+                <a href="{{ url_for('viewProvider', provider_name=provider.name) }}">View Courses</a>
             </div>
         </div>
         {% endfor %}
