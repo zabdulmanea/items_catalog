@@ -23,10 +23,10 @@
 <section class="items">
     <h2 class="subject-header">{{ provider.name }} Courses</h2>
     <div class="courses">
-        {% for x in [1,2,3,4,5] %}
+        {% for course in courses %}
         <div class="course-content">
             <a href="{{ url_for('viewCourse', provider_name='temp', course_name='temp') }}">
-                <h4 class="course-title">course-name</h4>
+                <h4 class="course-title">{{ course.name }}</h4>
             </a>
         </div>
         {% endfor %}

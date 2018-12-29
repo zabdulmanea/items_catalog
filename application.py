@@ -17,15 +17,17 @@ session = DBSession()
 @app.route('/')
 @app.route('/providers')
 def providers():
+    # Get all providers
     all_providers = session.query(Provider).all()
-    # join_courses_providers = session.query(Course).join(Provider).filter(Course.provider_id==Provider.id).all()
-    # result = session.execute('SELECT * FROM Course JOIN Provider ON Course.provider_id = Provider.id')
-    # for _r in result:
-    #     print(_r)
-    latest_courses = session.query(Course).order_by(Course.id.desc()).limit(10)
-    # for course in latest_courses:
-    #     print course.name
-    return render_template('index.html', providers=all_providers, latest_courses = latest_courses)
+
+    # Get the latest 10 courses along with each course provider
+    latest_courses = session.query(
+        Provider.name.label('provider_name'),
+        Course.name.label('course_name')).filter(
+            Course.provider_id == Provider.id).order_by(Course.id.desc()).limit(10)
+
+    return render_template(
+        'index.html', providers=all_providers, latest_courses=latest_courses)
 
 
 # view specific MOOC provider
@@ -34,7 +36,8 @@ def providers():
 def viewProvider(provider_name):
     provider = session.query(Provider).filter_by(name=provider_name).one()
     courses = session.query(Course).filter_by(provider_id=provider.id).all()
-    return render_template('viewprovider.html', provider = provider, courses = courses)
+    return render_template(
+        'viewprovider.html', provider=provider, courses=courses)
 
 
 # view specific MOOC course
@@ -49,17 +52,21 @@ def viewCourse(provider_name, course_name):
 @app.route('/provider/course/new/', methods=['GET', 'POST'])
 def newCourse():
     if request.method == 'POST':
-        courseProvider = session.query(Provider).filter_by(id=request.form.get('selected-provider')).one()
+        # get the selected proveder from the dropdown list
+        courseProvider = session.query(Provider).filter_by(
+            id=request.form.get('selected-provider')).one()
+        # create a new provider course
         newCourse = Course(
-            name=request.form['course_name'], description=request.form['course-description'], provider = courseProvider)
+            name=request.form['course_name'],
+            description=request.form['course-description'],
+            provider=courseProvider)
         session.add(newCourse)
         session.commit()
+        # redirect to the main page
         return redirect(url_for('providers'))
     else:
         all_providers = session.query(Provider).all()
-        return render_template('newcourse.html', providers = all_providers)
-
-    
+        return render_template('newcourse.html', providers=all_providers)
 
 
 # update information of MOOC course
