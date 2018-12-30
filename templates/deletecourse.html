@@ -10,18 +10,18 @@
     <ul class="nav-bar">
         <li><a class="nav-link" href="{{ url_for('providers') }}">Providers Catalog ></a></li>
         <li><a class="nav-link" href="{{ url_for('viewProvider', provider_name=provider_name) }}">{{ provider_name }} ></a></li>
-        <li><a class="nav-link" href="{{ url_for('viewCourse', provider_name=provider_name, course_name=course_name) }}">
-                {{ course_name }} ></a></li>
-        <li>Delete {{ course_name }} Course</li>
+        <li><a class="nav-link" href="{{ url_for('viewCourse', provider_name=provider_name, course_id=course.id) }}">
+                {{ course.name }} ></a></li>
+        <li>Delete Course</li>
     </ul>
 </nav>
 
 <form method="post" name="Form">
     <h2 class="subject-header">Delete a Course</h2>
-    <h3 class="confirm-deletion"><b>Are you sure you want to delete  {{ course_name }} Course?</b></h3>
+    <h3 class="confirm-deletion"><b>Are you sure you want to delete  {{ course.name }} Course?</b></h3>
     <div class="delete-buttons">
         <input class="delete" type="submit" value="Delete Course">
-        <a class="cancel" href="{{ url_for('viewCourse', provider_name=provider_name, course_name=course_name) }}">Cancel</a>
+        <a class="cancel" href="{{ url_for('viewCourse', provider_name=provider_name, course_id=course.id) }}">Cancel</a>
     </div>
 </form>
 

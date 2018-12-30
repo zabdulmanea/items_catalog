@@ -39,7 +39,7 @@ class Course(Base):
     __tablename__ = 'course'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(80), nullable=False, unique=True)
+    name = Column(String(80), nullable=False)
     description = Column(String(250))
     link = Column(String(250))
     provider_id = Column(Integer, ForeignKey('provider.id'))

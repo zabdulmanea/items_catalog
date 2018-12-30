@@ -22,7 +22,7 @@
         {{ course.description }}
     </p>
     <div class="user-course-link">
-        <h4>This course has been added by {{ course.user_name }}</h4>
+        <h4>This course information has been added by {{ course.user_name }}</h4>
         <a href="{{ course.link }}" target="_blank">Click Here to Link to the course site</a>
     </div>
 
@@ -32,9 +32,9 @@
 
 <div class="buttons" {% if 'username' not in login_session or login_session['user_id'] !=course.user_id%} hidden {%
     else %} visible {% endif %}>
-    <a class="edit" href="{{ url_for('editCourse', provider_name=provider_name, course_name=course.name) }}">Edit
+    <a class="edit" href="{{ url_for('editCourse', provider_name=provider_name, course_id=course.id) }}">Edit
         Course</a>
-    <a class="delete" href="{{ url_for('deleteCourse', provider_name=provider_name, course_name=course.name) }}">Delete
+    <a class="delete" href="{{ url_for('deleteCourse', provider_name=provider_name, course_id=course.id) }}">Delete
         Course</a>
 </div>
 

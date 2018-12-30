@@ -10,7 +10,7 @@
     <ul class="nav-bar">
         <li><a class="nav-link" href="{{ url_for('providers') }}">Providers Catalog ></a></li>
         <li><a class="nav-link" href="{{ url_for('viewProvider', provider_name=provider_name) }}">{{ provider_name }} ></a></li>
-        <li><a class="nav-link" href="{{ url_for('viewCourse', provider_name=provider_name, course_name=course.name) }}">{{
+        <li><a class="nav-link" href="{{ url_for('viewCourse', provider_name=provider_name, course_id=course.id) }}">{{
                 course.name }} ></a></li>
         <li>Update {{ course.name }} Course</li>
     </ul>
@@ -39,7 +39,7 @@
     </div>
     <div class="update-buttons">
         <input class="update" type="submit" value="Update Course">
-        <a class="cancel" href="{{ url_for('viewCourse', provider_name=provider_name, course_name=course.name) }}">Cancel</a>
+        <a class="cancel" href="{{ url_for('viewCourse', provider_name=provider_name, course_id=course.id) }}">Cancel</a>
     </div>
 </form>
 

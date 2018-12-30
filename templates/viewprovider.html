@@ -25,10 +25,9 @@
     <div class="courses">
         {% for course in courses %}
         <div class="course-content">
-            <a href="{{ url_for('viewCourse', provider_name=provider.name, course_name=course.name) }}">
+            <a href="{{ url_for('viewCourse', provider_name=provider.name, course_id=course.id) }}">
                 <h4 class="course-title">{{ course.name }} </h4>
                 <p>--- Added by {{ course.user_name }} ---</p>
-
             </a>
         </div>
         {% endfor %}

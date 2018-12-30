@@ -148,6 +148,7 @@ def gconnect():
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
+    login_session['provider'] = 'google'
 
     # check if user has account or create new one
     user_id = getUserID(login_session['email'])
@@ -218,9 +219,9 @@ def providerCoursesJSON(provider_name):
     return jsonify(ProviderCourses=[c.serialize for c in courses])
 
 
-@app.route('/provider/<string:provider_name>/course/<string:course_name>/JSON')
-def courseJSON(provider_name, course_name):
-    course = session.query(Course).filter_by(name=course_name).one()
+@app.route('/provider/<string:provider_name>/course/<int:course_id>/JSON')
+def courseJSON(provider_name, course_id):
+    course = session.query(Course).filter_by(id=course_id).one()
     return jsonify(Course=course.serialize)
 
 
@@ -228,14 +229,14 @@ def courseJSON(provider_name, course_name):
 # view home page
 @app.route('/')
 @app.route('/providers')
-def providers():
+def providers():    
     # Get all providers
     all_providers = session.query(Provider).all()
 
     # Get the latest 10 courses along with each course provider
     latest_courses = session.query(
         Provider.name.label('provider_name'),
-        Course.name.label('course_name')).filter(
+        Course.name.label('course_name'), Course.id.label('course_id')).filter(
             Course.provider_id == Provider.id).order_by(
                 Course.id.desc()).limit(10)
     # render Home page
@@ -253,7 +254,7 @@ def viewProvider(provider_name):
     provider = session.query(Provider).filter_by(name=provider_name).one()
     # courses = session.query(Course).filter_by(provider_id=provider.id).all()
     courses = session.query(
-        Course.name.label('name'), User.name.label('user_name')).filter(
+        Course.name.label('name'), User.name.label('user_name'), Course.id.label('id')).filter(
             Course.user_id == User.id,
             Course.provider_id == provider.id).all()
 
@@ -266,14 +267,13 @@ def viewProvider(provider_name):
 
 
 # view specific MOOC course
-@app.route('/provider/<string:provider_name>/course/<string:course_name>/')
-def viewCourse(provider_name, course_name):
-    course = session.query(Course).filter_by(name=course_name).one()
+@app.route('/provider/<string:provider_name>/course/<int:course_id>/')
+def viewCourse(provider_name, course_id):
+    course = session.query(Course).filter_by(id=course_id).one()
     course = session.query(
-        Course.name.label('name'), Course.description, Course.link, Course.user_id, User.name.label('user_name')).filter(
+        Course.id.label('id'), Course.name.label('name'), Course.description, Course.link, Course.user_id, User.name.label('user_name')).filter(
             Course.user_id == User.id,
-            Course.name == course_name).one()
-    print course
+            Course.id == course_id).one()
 
     # render course provider page
     return render_template(
@@ -302,7 +302,7 @@ def newCourse():
             user_id=login_session['user_id'])
         session.add(newCourse)
         session.commit()
-        flash("Course Successfully Created!! ")
+        flash("New Course %s Successfully Created!!" % newCourse.name)
         # redirect to the main page
         return redirect(url_for('providers'))
     else:
@@ -316,15 +316,15 @@ def newCourse():
 
 # update information of MOOC course
 @app.route(
-    '/provider/<string:provider_name>/course/<string:course_name>/edit/',
+    '/provider/<string:provider_name>/course/<int:course_id>/edit/',
     methods=['GET', 'POST'])
-def editCourse(provider_name, course_name):
+def editCourse(provider_name, course_id):
     # check if the user is not logged in
     if 'username' not in login_session:
         return redirect(url_for('viewLogin'))
 
     # Get the course you want to update
-    course = session.query(Course).filter_by(name=course_name).one()
+    course = session.query(Course).filter_by(id=course_id).one()
 
     # check if the user is not authorized to edit
     if course.user_id != login_session['user_id']:
@@ -333,13 +333,12 @@ def editCourse(provider_name, course_name):
             url_for(
                 'viewCourse',
                 provider_name=provider_name,
-                course_name=course_name))
+                course_id=course_id))
 
     if request.method == 'POST':
         # obtain the selected provider from the dropdown list
         courseProvider = session.query(Provider).filter_by(
             id=request.form.get('selected-provider')).one()
-
         course.name = request.form['course-name']
         course.description = request.form['course-description']
         course.link = request.form['course-link']
@@ -347,14 +346,14 @@ def editCourse(provider_name, course_name):
         session.add(course)
         session.commit()
 
-        flash("Course Successfully Updated!!")
+        flash("%s Course Successfully Updated!!" % course.name)
 
         # redirect to the course page
         return redirect(
             url_for(
                 'viewCourse',
                 provider_name=courseProvider.name,
-                course_name=course.name))
+                course_id=course.id))
     else:
         all_providers = session.query(Provider).all()
         # render updating course page
@@ -368,14 +367,14 @@ def editCourse(provider_name, course_name):
 
 # delete specific MOOC course
 @app.route(
-    '/provider/<string:provider_name>/course/<string:course_name>/delete/',
+    '/provider/<string:provider_name>/course/<int:course_id>/delete/',
     methods=['GET', 'POST'])
-def deleteCourse(provider_name, course_name):
+def deleteCourse(provider_name, course_id):
     # check if the user is not logged in
     if 'username' not in login_session:
         return redirect(url_for('viewLogin'))
 
-    course = session.query(Course).filter_by(name=course_name).one()
+    course = session.query(Course).filter_by(id=course_id).one()
     # check if the user is not authorized to delete
     if course.user_id != login_session['user_id']:
         flash("You are not allowed to delete this course!")
@@ -384,13 +383,13 @@ def deleteCourse(provider_name, course_name):
             url_for(
                 'viewCourse',
                 provider_name=provider_name,
-                course_name=course_name))
+                course_id=course_id))
 
     if request.method == 'POST':
         session.delete(course)
         session.commit()
 
-        flash("Course Successfully Deleted!!")
+        flash("%s Course Successfully Deleted!!" % course.name)
 
         # redirect to the provider page
         return redirect(url_for('viewProvider', provider_name=provider_name))
@@ -399,7 +398,7 @@ def deleteCourse(provider_name, course_name):
         return render_template(
             'deletecourse.html',
             provider_name=provider_name,
-            course_name=course_name,
+            course=course,
             login_session=login_session)
 
 
