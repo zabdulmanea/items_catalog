@@ -24,6 +24,15 @@ class Provider(Base):
     name = Column(String(250), nullable=False, unique=True)
     description = Column(String(250))
 
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'name': self.name,
+            'description': self.description,
+            'id': self.id,
+        }
+
 
 # Course Table
 class Course(Base):
@@ -36,6 +45,15 @@ class Course(Base):
     provider = relationship(Provider)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
+
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'name': self.name,
+            'description': self.description,
+            'id': self.id,
+        }
 
 
 engine = create_engine('sqlite:///providercourses.db')

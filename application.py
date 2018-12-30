@@ -1,5 +1,5 @@
 # Web Server modules
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 
 # Database modules
 from sqlalchemy import create_engine
@@ -203,6 +203,22 @@ def gdisconnect():
         return response
 
 # ------------------- JSON | API Endpoint -------------------------
+@app.route('/providers/JSON')
+def providersJSON():
+    providers = session.query(Provider).all()
+    return jsonify(MOOCProviders=[p.serialize for p in providers])
+
+@app.route('/provider/<string:provider_name>/JSON')
+@app.route('/provider/<string:provider_name>/courses/JSON')
+def providerCoursesJSON(provider_name):
+    provider = session.query(Provider).filter_by(name=provider_name).one()
+    courses = session.query(Course).filter_by(provider_id=provider.id).all()
+    return jsonify(ProviderCourses=[c.serialize for c in courses])
+
+@app.route('/provider/<string:provider_name>/course/<string:course_name>/JSON')
+def courseJSON(provider_name, course_name):
+    course = session.query(Course).filter_by(name=course_name).one()
+    return jsonify(Course=course.serialize)
 
 # ------------------- APP PAGES -------------------------
 # view home page
