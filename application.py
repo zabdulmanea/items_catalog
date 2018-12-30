@@ -52,6 +52,7 @@ def getUserID(email):
     except:
         return None
 
+
 # ------------------- LOGIN -------------------------
 
 # declare CLIENT_ID using client_secrets file
@@ -225,7 +226,10 @@ def providers():
                 Course.id.desc()).limit(10)
     # render Home page
     return render_template(
-        'index.html', providers=all_providers, latest_courses=latest_courses)
+        'index.html',
+        providers=all_providers,
+        latest_courses=latest_courses,
+        login_session=login_session)
 
 
 # view specific MOOC provider
@@ -245,7 +249,10 @@ def viewCourse(provider_name, course_name):
     course = session.query(Course).filter_by(name=course_name).one()
     # render course provider page
     return render_template(
-        'viewcourse.html', provider_name=provider_name, course=course)
+        'viewcourse.html',
+        provider_name=provider_name,
+        course=course,
+        login_session=login_session)
 
 
 # create MOOC course
@@ -279,10 +286,22 @@ def newCourse():
     '/provider/<string:provider_name>/course/<string:course_name>/edit/',
     methods=['GET', 'POST'])
 def editCourse(provider_name, course_name):
+    # check if the user is not logged in
     if 'username' not in login_session:
         return redirect(url_for('viewLogin'))
+
     # Get the course you want to update
     course = session.query(Course).filter_by(name=course_name).one()
+
+    # check if the user is not authorized to edit
+    if course.user_id != login_session['user_id']:
+        # return "<script>function myFunction() { alert('You are not allowed to edit this course!')}</script><body onload='myFunction()''>"
+        return redirect(
+            url_for(
+                'viewCourse',
+                provider_name=provider_name,
+                course_name=course_name))
+
     if request.method == 'POST':
         # obtain the selected provider from the dropdown list
         courseProvider = session.query(Provider).filter_by(
@@ -316,10 +335,22 @@ def editCourse(provider_name, course_name):
     '/provider/<string:provider_name>/course/<string:course_name>/delete/',
     methods=['GET', 'POST'])
 def deleteCourse(provider_name, course_name):
+    # check if the user is not logged in
     if 'username' not in login_session:
         return redirect(url_for('viewLogin'))
+
+    course = session.query(Course).filter_by(name=course_name).one()
+    # check if the user is not authorized to delete
+    if course.user_id != login_session['user_id']:
+        # "<script>function myFunction() { alert('You are not allowed to delete this course!')}</script><body onload='myFunction()''>"
+        # redirect to course page
+        return redirect(
+            url_for(
+                'viewCourse',
+                provider_name=provider_name,
+                course_name=course_name))
+
     if request.method == 'POST':
-        course = session.query(Course).filter_by(name=course_name).one()
         session.delete(course)
         session.commit()
         # redirect to the provider page

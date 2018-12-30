@@ -6,7 +6,8 @@
 
 {% block content %}
 
-<div class="new-course">
+
+<div class="new-course" {% if 'username' not in login_session %} hidden {% else %} visible {% endif %}>
     <a href="{{ url_for('newCourse') }}">Add New Course</a>
 </div>
 
