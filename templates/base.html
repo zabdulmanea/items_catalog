@@ -23,7 +23,7 @@
                 <h1 class="name">MOOC Providers Catalog</h1>
                 <h3 class="title">A Massive Open Online Course Providers</h3>
             </div>
-            <div class="login">
+            <div id="hide" class="login">
                 <p class="login-link">
                         {% if 'username' not in login_session %}
                         <a href="{{ url_for('viewLogin') }}">Login</a>
@@ -38,6 +38,16 @@
         </header>
 
         <hr>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class="flash-message flash-message-green">
+            {% for message in messages%}
+            <li><strong>{{ message }}</strong></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
 
         {% block content %}
         {% endblock %}

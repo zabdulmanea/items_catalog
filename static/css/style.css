@@ -101,6 +101,14 @@ img {
     border-radius: 150px;
 }
 
+.flash-message {
+    list-style: none;
+    text-align: center;
+}
+
+.flash-message-green {
+    color: rgb(10, 114, 10);
+}
 /***  Horizontal line style
 --------------------------------------------------------------------------- ***/
 

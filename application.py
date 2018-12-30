@@ -164,7 +164,8 @@ def gconnect():
     output += '!</h2>'
     output += '<img class="login_pic" src="'
     output += login_session['picture']
-    flash("you are now logged in as %s" % login_session['username'])
+    output += '"<br>'
+    flash("You are now logged in as %s" % login_session['username'])
     print "done!"
     return output
 
