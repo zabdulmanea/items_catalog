@@ -122,7 +122,6 @@ def gconnect():
     if result['issued_to'] != CLIENT_ID:
         response = make_response(
             json.dumps("Token's client ID does not match app's."), 401)
-        print "Token's client ID does not match app's."
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -166,7 +165,6 @@ def gconnect():
     output += login_session['picture']
     output += '"<br>'
     flash("You are now logged in as %s" % login_session['username'])
-    print "done!"
     return output
 
 
@@ -181,18 +179,11 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    print 'In gdisconnect access token is %s', access_token
-    print 'User name is: '
-    print login_session['username']
-
     # revoking token using google url
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session[
         'access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
-
-    print 'result is '
-    print result
 
     if result['status'] == '200':
         # reset the user login_session
@@ -203,6 +194,7 @@ def gdisconnect():
         del login_session['picture']
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
+        flash("You have Successfully Logout")
         return redirect(url_for('providers'))
     else:
         response = make_response(
@@ -210,6 +202,7 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
+# ------------------- JSON | API Endpoint -------------------------
 
 # ------------------- APP PAGES -------------------------
 # view home page
@@ -277,6 +270,7 @@ def newCourse():
             user_id=login_session['user_id'])
         session.add(newCourse)
         session.commit()
+        flash("Course Successfully Created!! ")
         # redirect to the main page
         return redirect(url_for('providers'))
     else:
@@ -302,7 +296,7 @@ def editCourse(provider_name, course_name):
 
     # check if the user is not authorized to edit
     if course.user_id != login_session['user_id']:
-        # return "<script>function myFunction() { alert('You are not allowed to edit this course!')}</script><body onload='myFunction()''>"
+        flash("You are not allowed to edit this course!")
         return redirect(
             url_for(
                 'viewCourse',
@@ -317,16 +311,17 @@ def editCourse(provider_name, course_name):
         course.name = request.form['course_name']
         course.description = request.form['course-description']
         course.provider = courseProvider
-
         session.add(course)
         session.commit()
+
+        flash("Course Successfully Updated!!")
 
         # redirect to the course page
         return redirect(
             url_for(
                 'viewCourse',
                 provider_name=courseProvider.name,
-                course_name=course_name))
+                course_name=course.name))
     else:
         all_providers = session.query(Provider).all()
         # render updating course page
@@ -350,7 +345,7 @@ def deleteCourse(provider_name, course_name):
     course = session.query(Course).filter_by(name=course_name).one()
     # check if the user is not authorized to delete
     if course.user_id != login_session['user_id']:
-        # "<script>function myFunction() { alert('You are not allowed to delete this course!')}</script><body onload='myFunction()''>"
+        flash("You are not allowed to delete this course!")
         # redirect to course page
         return redirect(
             url_for(
@@ -361,6 +356,9 @@ def deleteCourse(provider_name, course_name):
     if request.method == 'POST':
         session.delete(course)
         session.commit()
+
+        flash("Course Successfully Deleted!!")
+
         # redirect to the provider page
         return redirect(url_for('viewProvider', provider_name=provider_name))
     else:

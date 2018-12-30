@@ -366,9 +366,13 @@ input[type=text]:focus, textarea:focus, select:focus {
     outline: none;
 }
 
-.create-buttons, .update-buttons, .delete-buttons {
+.create-buttons, .update-buttons {
     margin: 15px;
     text-align: right;
+}
+
+.delete-buttons {
+    text-align: left;
 }
 
 .confirm-deletion {
