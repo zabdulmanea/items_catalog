@@ -26,12 +26,39 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
+# ------------------- USER Functions -------------------------
+# create a new user in the datbase ans get the user id
+def createUser(login_session):
+    new_user = User(
+        name=login_session['username'],
+        email=login_session['email'],
+        picture=login_session['picture'])
+    session.add(new_user)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
+
+# ------------------- LOGIN -------------------------
+
 # declare CLIENT_ID using client_secrets file
 CLIENT_ID = json.loads(open('client_secrets.json',
                             'r').read())['web']['client_id']
 
 
-# ------------------- LOGIN -------------------------
 # Make nti-forgery state token and view login page
 @app.route('/login')
 def viewLogin():
@@ -45,6 +72,7 @@ def viewLogin():
     return render_template('login.html', STATE=state_token)
 
 
+# ------------------- GOOGLE SIGNIN -------------------------
 # Create G-connect that accepts one-time code
 # and handle the code sent back from the callback method
 @app.route('/gconnect', methods=['POST'])
@@ -173,7 +201,7 @@ def gdisconnect():
         return response
 
 
-# ------------------- App Pages -------------------------
+# ------------------- APP PAGES -------------------------
 # view home page
 @app.route('/')
 @app.route('/providers')
@@ -226,7 +254,8 @@ def newCourse():
         newCourse = Course(
             name=request.form['course_name'],
             description=request.form['course-description'],
-            provider=courseProvider)
+            provider=courseProvider,
+            user_id=login_session['user_id'])
         session.add(newCourse)
         session.commit()
         # redirect to the main page
