@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 # Database modules
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Provider, Course
+from database_setup import Base, User, Provider, Course
 
 # Library to generate unique session token
 from flask import session as login_session
@@ -131,15 +131,15 @@ def gconnect():
     print "done!"
     return output
 
-# create G-disconnect 
+
+# create G-disconnect
 # revoke a current user's token and reset their login_session
 @app.route('/gdisconnect')
 def gdisconnect():
-    # execute HTTP request to revoke current token 
+    # execute HTTP request to revoke current token
     access_token = login_session.get('access_token')
     if access_token is None:
-        response = make_response(
-            json.dumps('You are not connected.'), 401)
+        response = make_response(json.dumps('You are not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -155,7 +155,7 @@ def gdisconnect():
 
     print 'result is '
     print result
-    
+
     if result['status'] == '200':
         # reset the user login_session
         del login_session['access_token']
@@ -215,6 +215,9 @@ def viewCourse(provider_name, course_name):
 # create MOOC course
 @app.route('/provider/course/new/', methods=['GET', 'POST'])
 def newCourse():
+    if 'username' not in login_session:
+        return redirect(url_for('viewLogin'))
+
     if request.method == 'POST':
         # obtain the selected provider from the dropdown list
         courseProvider = session.query(Provider).filter_by(
@@ -239,6 +242,8 @@ def newCourse():
     '/provider/<string:provider_name>/course/<string:course_name>/edit/',
     methods=['GET', 'POST'])
 def editCourse(provider_name, course_name):
+    if 'username' not in login_session:
+        return redirect(url_for('viewLogin'))
     # Get the course you want to update
     course = session.query(Course).filter_by(name=course_name).one()
     if request.method == 'POST':
@@ -274,6 +279,8 @@ def editCourse(provider_name, course_name):
     '/provider/<string:provider_name>/course/<string:course_name>/delete/',
     methods=['GET', 'POST'])
 def deleteCourse(provider_name, course_name):
+    if 'username' not in login_session:
+        return redirect(url_for('viewLogin'))
     if request.method == 'POST':
         course = session.query(Course).filter_by(name=course_name).one()
         session.delete(course)

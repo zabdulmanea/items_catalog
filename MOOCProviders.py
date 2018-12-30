@@ -69,6 +69,9 @@ Providers = [
     }
 ]
 
+session.query(Provider).delete()
+session.commit()
+
 for provider in Providers:
     session.add(
         Provider(name=provider["name"], description=provider["description"]))

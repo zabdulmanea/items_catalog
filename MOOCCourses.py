@@ -1,12 +1,33 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Provider, Course
+from database_setup import Base, User, Provider, Course
 
 engine = create_engine('sqlite:///providercourses.db?check_same_thread=False')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+# Insert user 1
+user1 = User(
+    name="Ali Ali",
+    email="aali@udacity.com",
+    picture=
+    'https://pbs.twimg.com/profile_images/2671170543/18debd694829ed78203a5a36dd364160_400x400.png'
+)
+session.add(user1)
+session.commit()
+
+# Insert user 2
+user2 = User(
+    name="Ahmed Hassan",
+    email="ahassan@udacity.com",
+    picture=
+    'https://pbs.twimg.com/profile_images/2671170543/18debd694829ed78203a5a36dd364160_400x400.png'
+)
+session.add(user2)
+session.commit()
+
+# Search for provider
 udacity = provider = session.query(Provider).filter_by(name='Udacity').one()
 
 Courses = [
@@ -70,5 +91,6 @@ for course in Courses:
         Course(
             name=course["name"],
             description=course["description"],
-            provider=udacity))
+            provider=udacity,
+            user=user1))
     session.commit()
