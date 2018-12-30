@@ -46,6 +46,17 @@ html, body, .container {
     min-width: 100px;
 }
 
+.logo-link {
+    background: none;
+    border: 0px;
+}
+
+.logged-user {
+    font-size: 13px;
+    padding: 5px;
+    margin: 0px;
+    vertical-align: bottom;
+}
 img {
     max-width: 100%;
     height: auto;
@@ -82,6 +93,12 @@ img {
 .login-link {
     text-align: center;
     font-weight: bold;
+}
+
+.login_pic {
+    width: 90px; 
+    height: 90px;
+    border-radius: 150px;
 }
 
 /***  Horizontal line style

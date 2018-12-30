@@ -154,16 +154,16 @@ def gconnect():
     user_id = getUserID(login_session['email'])
     if not user_id:
         user_id = createUser(login_session)
+    # store user id in login_session
     login_session['user_id'] = user_id
 
     # view succeful login message
     output = ''
-    output += '<h1>Welcome, '
+    output += '<h2>Welcome, '
     output += login_session['username']
-    output += '!</h1>'
-    output += '<img src="'
+    output += '!</h2>'
+    output += '<img class="login_pic" src="'
     output += login_session['picture']
-    output += ' " style = "width: 90px; height: 90px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
@@ -202,7 +202,7 @@ def gdisconnect():
         del login_session['picture']
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
-        return response
+        return redirect(url_for('providers'))
     else:
         response = make_response(
             json.dumps('Failed to revoke token for given user.', 400))
@@ -240,7 +240,10 @@ def viewProvider(provider_name):
     courses = session.query(Course).filter_by(provider_id=provider.id).all()
     # render MOOC provider page
     return render_template(
-        'viewprovider.html', provider=provider, courses=courses)
+        'viewprovider.html',
+        provider=provider,
+        courses=courses,
+        login_session=login_session)
 
 
 # view specific MOOC course
@@ -278,7 +281,10 @@ def newCourse():
     else:
         all_providers = session.query(Provider).all()
         # render creating course page
-        return render_template('newcourse.html', providers=all_providers)
+        return render_template(
+            'newcourse.html',
+            providers=all_providers,
+            login_session=login_session)
 
 
 # update information of MOOC course
@@ -327,7 +333,8 @@ def editCourse(provider_name, course_name):
             'editcourse.html',
             providers=all_providers,
             provider_name=provider_name,
-            course=course)
+            course=course,
+            login_session=login_session)
 
 
 # delete specific MOOC course
@@ -360,7 +367,8 @@ def deleteCourse(provider_name, course_name):
         return render_template(
             'deletecourse.html',
             provider_name=provider_name,
-            course_name=course_name)
+            course_name=course_name,
+            login_session=login_session)
 
 
 # ------------------- Main -------------------------
