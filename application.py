@@ -21,7 +21,7 @@ import requests
 
 app = Flask(__name__)
 
-engine = create_engine('sqlite:///providercourses.db?check_same_thread=False')
+engine = create_engine('sqlite:///provider_courses.db?check_same_thread=False')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
@@ -194,7 +194,7 @@ def gdisconnect():
         del login_session['picture']
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
-        flash("You have Successfully Logout")
+        flash("You have been successfully logged out! ")
         return redirect(url_for('providers'))
     else:
         response = make_response(
@@ -202,11 +202,13 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
+
 # ------------------- JSON | API Endpoint -------------------------
 @app.route('/providers/JSON')
 def providersJSON():
     providers = session.query(Provider).all()
     return jsonify(MOOCProviders=[p.serialize for p in providers])
+
 
 @app.route('/provider/<string:provider_name>/JSON')
 @app.route('/provider/<string:provider_name>/courses/JSON')
@@ -215,10 +217,12 @@ def providerCoursesJSON(provider_name):
     courses = session.query(Course).filter_by(provider_id=provider.id).all()
     return jsonify(ProviderCourses=[c.serialize for c in courses])
 
+
 @app.route('/provider/<string:provider_name>/course/<string:course_name>/JSON')
 def courseJSON(provider_name, course_name):
     course = session.query(Course).filter_by(name=course_name).one()
     return jsonify(Course=course.serialize)
+
 
 # ------------------- APP PAGES -------------------------
 # view home page
@@ -247,7 +251,12 @@ def providers():
 @app.route('/provider/<string:provider_name>/courses/')
 def viewProvider(provider_name):
     provider = session.query(Provider).filter_by(name=provider_name).one()
-    courses = session.query(Course).filter_by(provider_id=provider.id).all()
+    # courses = session.query(Course).filter_by(provider_id=provider.id).all()
+    courses = session.query(
+        Course.name.label('name'), User.name.label('user_name')).filter(
+            Course.user_id == User.id,
+            Course.provider_id == provider.id).all()
+
     # render MOOC provider page
     return render_template(
         'viewprovider.html',
@@ -260,6 +269,12 @@ def viewProvider(provider_name):
 @app.route('/provider/<string:provider_name>/course/<string:course_name>/')
 def viewCourse(provider_name, course_name):
     course = session.query(Course).filter_by(name=course_name).one()
+    course = session.query(
+        Course.name.label('name'), Course.description, Course.link, Course.user_id, User.name.label('user_name')).filter(
+            Course.user_id == User.id,
+            Course.name == course_name).one()
+    print course
+
     # render course provider page
     return render_template(
         'viewcourse.html',
@@ -280,8 +295,9 @@ def newCourse():
             id=request.form.get('selected-provider')).one()
         # create a new provider course
         newCourse = Course(
-            name=request.form['course_name'],
+            name=request.form['course-name'],
             description=request.form['course-description'],
+            link=request.form['course-link'],
             provider=courseProvider,
             user_id=login_session['user_id'])
         session.add(newCourse)
@@ -324,8 +340,9 @@ def editCourse(provider_name, course_name):
         courseProvider = session.query(Provider).filter_by(
             id=request.form.get('selected-provider')).one()
 
-        course.name = request.form['course_name']
+        course.name = request.form['course-name']
         course.description = request.form['course-description']
+        course.link = request.form['course-link']
         course.provider = courseProvider
         session.add(course)
         session.commit()

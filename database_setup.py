@@ -41,6 +41,7 @@ class Course(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False, unique=True)
     description = Column(String(250))
+    link = Column(String(250))
     provider_id = Column(Integer, ForeignKey('provider.id'))
     provider = relationship(Provider)
     user_id = Column(Integer, ForeignKey('user.id'))
@@ -52,9 +53,10 @@ class Course(Base):
         return {
             'name': self.name,
             'description': self.description,
+            'link': self.link,
             'id': self.id,
         }
 
 
-engine = create_engine('sqlite:///providercourses.db')
+engine = create_engine('sqlite:///provider_courses.db')
 Base.metadata.create_all(engine)

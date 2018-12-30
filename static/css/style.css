@@ -57,6 +57,7 @@ html, body, .container {
     margin: 0px;
     vertical-align: bottom;
 }
+
 img {
     max-width: 100%;
     height: auto;
@@ -96,7 +97,7 @@ img {
 }
 
 .login_pic {
-    width: 90px; 
+    width: 90px;
     height: 90px;
     border-radius: 150px;
 }
@@ -109,6 +110,7 @@ img {
 .flash-message-green {
     color: rgb(10, 114, 10);
 }
+
 /***  Horizontal line style
 --------------------------------------------------------------------------- ***/
 
@@ -151,7 +153,7 @@ hr {
 /***  links style
 --------------------------------------------------------------------------- ***/
 
-a  {
+a {
     text-decoration: none;
     color: #f0e7d7;
     border: 1px solid rgba(63, 47, 34, 0.5);
@@ -169,8 +171,8 @@ a:hover, a:active, input[type=submit]:hover, input[type=submit]:active {
 }
 
 button, input[type="submit"], input[type="reset"] {
-	font: inherit;
-	cursor: pointer;
+    font: inherit;
+    cursor: pointer;
     outline: inherit;
     text-decoration: none;
     color: #f0e7d7;
@@ -180,7 +182,6 @@ button, input[type="submit"], input[type="reset"] {
     border-radius: 3px;
     display: inline-block;
     margin-top: 10px;
-    
 }
 
 /***  New Course Button style
@@ -224,16 +225,17 @@ button, input[type="submit"], input[type="reset"] {
     border: 0px;
 }
 
-.provider-title{
+.provider-title {
     margin: 0;
 }
-.provider-title, .login-title{
+
+.provider-title, .login-title {
     text-transform: uppercase;
     padding: 0;
 }
 
 .login-title {
-    margin:13px;
+    margin: 13px;
 }
 
 /***  Latest Courses section style
@@ -277,6 +279,11 @@ button, input[type="submit"], input[type="reset"] {
     background-color: transparent;
 }
 
+.course-content p {
+    font-size: 12px;
+    color: #af9571;
+}
+
 .course-title {
     margin-bottom: 8px;
     margin-top: 8px;
@@ -309,6 +316,28 @@ button, input[type="submit"], input[type="reset"] {
 
 .course-information h4 {
     color: #af9571;
+}
+
+.user-course-link {
+    text-align: left;
+    font-size: 13px;
+    display: flex;
+    flex-flow: row wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0;
+    padding:0 5px 0 5px;
+}
+
+.user-course-link a, .user-course-link h4 {
+    display: inline;
+}
+
+.user-course-link a {
+    background: none;
+    border: none;
+    color: green;
+    padding:0px;
 }
 
 .course-description {
@@ -418,17 +447,16 @@ footer p {
     }
 }
 
-
 /***  Login page Style 
 --------------------------------------------------------------------------- ***/
-.result{
+
+.result {
     color: green;
 }
 
-.dot-img{
+.dot-img {
     height: 40px;
 }
-
 
 /***  Viewport - at most 600px (1 project per row) 
 --------------------------------------------------------------------------- ***/

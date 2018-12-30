@@ -2,11 +2,22 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Provider, Course
 
-engine = create_engine('sqlite:///providercourses.db?check_same_thread=False')
+engine = create_engine('sqlite:///provider_courses.db?check_same_thread=False')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
+session.query(User).delete()
+session.commit()
+
+session.query(Provider).delete()
+session.commit()
+
+session.query(Course).delete()
+session.commit()
+
+'''
 # Insert user 1
 user1 = User(
     name="Ali Ali",
@@ -94,3 +105,4 @@ for course in Courses:
             provider=udacity,
             user=user1))
     session.commit()
+'''

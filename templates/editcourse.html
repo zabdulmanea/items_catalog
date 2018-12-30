@@ -20,7 +20,7 @@
     <h2 class="subject-header">Update a Course</h2>
     <div class="form-container">
         <label for="course-name"><b>Course Name</b></label>
-        <input type="text" placeholder="Enter Course Name" name="course_name" value="{{ course.name }}" required>
+        <input type="text" placeholder="Enter Course Name" name="course-name" value="{{ course.name }}" required>
 
         <label for="provider-name"><b>Course Provider Name</b></label>
         <select name="selected-provider" required>
@@ -30,6 +30,9 @@
                 provider.name }} </option>
             {% endfor %}
         </select>
+
+        <label for="course-link"><b>Course Link</b></label>
+        <input type="text" placeholder="Enter Source Link of the course" name="course-link" value="{{ course.link }}">
 
         <label for="course-description"><b>Course Description</b></label>
         <textarea placeholder="Describe the course here..." name="course-description">{{ course.description }}</textarea>

@@ -19,7 +19,7 @@
     <p>Please fill in this form to create a course.</p>
     <div class="form-container">
         <label for="course-name"><b>Course Name</b></label>
-        <input type="text" placeholder="Enter Course Name" name="course_name" required>
+        <input type="text" placeholder="Enter Course Name" name="course-name" required>
 
         <label for="provider-name"><b>Course Provider Name</b></label>
         <select name="selected-provider" required>
@@ -28,6 +28,9 @@
             <option value="{{ provider.id }}">{{ provider.name }} </option>
             {% endfor %}
         </select>
+
+        <label for="course-link"><b>Course Link</b></label>
+        <input type="text" placeholder="Enter Source Link of the course" name="course-link">
 
         <label for="course-description"><b>Course Description</b></label>
         <textarea placeholder="Describe the course here..." name="course-description"></textarea>
