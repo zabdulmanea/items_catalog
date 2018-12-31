@@ -343,10 +343,10 @@ def gconnect():
 
     # store user information in login_session
     # check if the user has a name or instead set the email
-    if data['name']:
+    if 'name' in data:
         login_session['username'] = data['name']
     else:        
-        login_session['username'] = data['email']
+        login_session['username'] = data['email'].split("@",1)[0]
 
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
