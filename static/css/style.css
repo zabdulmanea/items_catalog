@@ -287,6 +287,7 @@ button, input[type="submit"], input[type="reset"] {
 .course-title {
     margin-bottom: 8px;
     margin-top: 8px;
+    color: #706c54;
 }
 
 /***  provider/course page style

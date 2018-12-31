@@ -1,5 +1,6 @@
 # Web Server modules
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request
+from flask import redirect, url_for, flash, jsonify
 
 # Database modules
 from sqlalchemy import create_engine
@@ -109,7 +110,7 @@ def viewCourse(provider_name, course_id):
 # create MOOC course
 @app.route('/provider/course/new/', methods=['GET', 'POST'])
 def newCourse():
-    if 'username' not in login_session:
+    if 'user_id' not in login_session:
         return redirect(url_for('viewLogin'))
 
     if request.method == 'POST':
@@ -143,7 +144,7 @@ def newCourse():
     methods=['GET', 'POST'])
 def editCourse(provider_name, course_id):
     # check if the user is not logged in
-    if 'username' not in login_session:
+    if 'user_id' not in login_session:
         return redirect(url_for('viewLogin'))
 
     # Get the course you want to update
@@ -193,7 +194,7 @@ def editCourse(provider_name, course_id):
     methods=['GET', 'POST'])
 def deleteCourse(provider_name, course_id):
     # check if the user is not logged in
-    if 'username' not in login_session:
+    if 'user_id' not in login_session:
         return redirect(url_for('viewLogin'))
 
     course = session.query(Course).filter_by(id=course_id).one()
@@ -224,7 +225,7 @@ def deleteCourse(provider_name, course_id):
 
 
 # ------------------- USER Functions -------------------------
-# create a new user in the datbase ans get the user id
+# create a new user in the datbase then obtain the user id
 def newUser(login_session):
     new_user = User(
         name=login_session['username'],
@@ -236,7 +237,6 @@ def newUser(login_session):
     return user.id
 
 
-# create a new user in the datbase ans get the user id
 def getUserID(email):
     try:
         user = session.query(User).filter_by(email=email).one()
@@ -246,6 +246,7 @@ def getUserID(email):
 
 
 # ------------------- LOGIN -------------------------
+
 
 # Make nti-forgery state token and view login page
 @app.route('/login')
@@ -282,7 +283,7 @@ def gconnect():
     code = request.data
 
     try:
-        # exchange the authorization code into a credentials object which contains the access_token
+        # exchange the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
@@ -337,9 +338,16 @@ def gconnect():
     answer = requests.get(userinfo_url, params=params)
 
     data = answer.json()
+    print data
+    print answer
 
     # store user information in login_session
-    login_session['username'] = data['name']
+    # check if the user has a name or instead set the email
+    if data['name']:
+        login_session['username'] = data['name']
+    else:        
+        login_session['username'] = data['email']
+
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
     login_session['provider'] = 'google'
@@ -356,14 +364,13 @@ def fbconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     access_token = request.data
-    print "access token received %s " % access_token
 
     # exchange the short-lived token for a long-lived token
     app_id = json.loads(open('fb_client_secrets.json',
                              'r').read())['web']['app_id']
     app_secret = json.loads(open('fb_client_secrets.json',
                                  'r').read())['web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
+    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (  # NOQA
         app_id, app_secret, access_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
@@ -371,11 +378,9 @@ def fbconnect():
     token = result.split(',')[0].split(':')[1].replace('"', '')
 
     # make API calls with the new token
-    url = 'https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email' % token
+    url = 'https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email' % token  # NOQA
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
-    # print "url sent for API access:%s"% url
-    # print "API JSON result: %s" % result
 
     # populate the login_session
     data = json.loads(result)
@@ -388,7 +393,7 @@ def fbconnect():
     login_session['access_token'] = token
 
     # Get user picture
-    url = 'https://graph.facebook.com/v2.8/me/picture?access_token=%s&redirect=0&height=200&width=200' % token
+    url = 'https://graph.facebook.com/v2.8/me/picture?access_token=%s&redirect=0&height=200&width=200' % token  # NOQA
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     data = json.loads(result)
@@ -400,11 +405,12 @@ def fbconnect():
 
 # -------------------  SUCCESSFULL LOGIN MESSAGE -------------------------
 def loginSuccefulMessage(login_session):
-    # see if user exists
+    # see if user exists, if it doesn't make a new one
     user_id = getUserID(login_session['email'])
     if not user_id:
         user_id = newUser(login_session)
     login_session['user_id'] = user_id
+
     # view succeful login message
     message = ''
     message += '<h2>Welcome, '
@@ -413,7 +419,8 @@ def loginSuccefulMessage(login_session):
     message += '<img class="login_pic" src="'
     message += login_session['picture']
     message += '"><br>'
-    message += '<img class="dot-img" src="static/images/Ellipsis-1.8s-200px.gif">'
+    message += '<img class="dot-img" '
+    message += 'src="static/images/Ellipsis-1.8s-200px.gif">'
     message += '<br>'
     flash("You are now logged in as %s" % login_session['username'])
     return message
@@ -458,8 +465,7 @@ def gdisconnect():
         return response
 
     # revoking token using google url
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session[
-        'access_token']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']  # NOQA
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
 
