@@ -169,6 +169,108 @@ def gconnect():
     return output
 
 
+# ------------------- FACEBOOK SIGNIN -------------------------
+@app.route('/fbconnect', methods=['POST'])
+def fbconnect():
+    # ensure the user is making the request by validate state token
+    if request.args.get('state') != login_session['state']:
+        response = make_response(json.dumps('Invalid state parameter.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    access_token = request.data
+    print "access token received %s " % access_token
+
+    # exchange the short-lived token for a long-lived token
+    app_id = json.loads(open('fb_client_secrets.json',
+                             'r').read())['web']['app_id']
+    app_secret = json.loads(open('fb_client_secrets.json',
+                                 'r').read())['web']['app_secret']
+    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
+        app_id, app_secret, access_token)
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[1]
+
+    # Use token to get user info from API
+    userinfo_url = "https://graph.facebook.com/v2.8/me"
+    '''
+        Due to the formatting for the result from the server token exchange we have to
+        split the token first on commas and select the first index which gives us the key : value
+        for the server access token then we split it on colons to pull out the actual token value
+        and replace the remaining quotes with nothing so that it can be used directly in the graph
+        api calls
+    '''
+    token = result.split(',')[0].split(':')[1].replace('"', '')
+
+    # make API calls with the new token
+    url = 'https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email' % token
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[1]
+    # print "url sent for API access:%s"% url
+    # print "API JSON result: %s" % result
+
+    # populate the login_session
+    data = json.loads(result)
+    login_session['provider'] = 'facebook'
+    login_session['username'] = data["name"]
+    login_session['email'] = data["email"]
+    login_session['facebook_id'] = data["id"]
+
+    # The token must be stored in the login_session in order to properly logout
+    login_session['access_token'] = token
+
+    # Get user picture
+    url = 'https://graph.facebook.com/v2.8/me/picture?access_token=%s&redirect=0&height=200&width=200' % token
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[1]
+    data = json.loads(result)
+
+    login_session['picture'] = data["data"]["url"]
+
+    # see if user exists
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
+
+    # view succeful login message
+    output = ''
+    output += '<h2>Welcome, '
+    output += login_session['username']
+    output += '!</h2>'
+    output += '<img class="login_pic" src="'
+    output += login_session['picture']
+    output += '"<br>'
+    flash("You are now logged in as %s" % login_session['username'])
+    return output
+
+
+# -------------------  LOGOUT -------------------------
+# Disconnect based on provider
+@app.route('/disconnect')
+def disconnect():
+    if 'provider' in login_session:
+        if login_session['provider'] == 'google':
+            gdisconnect()
+            del login_session['gplus_id']
+            del login_session['access_token']
+        if login_session['provider'] == 'facebook':
+            fbdisconnect()
+            del login_session['facebook_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        del login_session['user_id']
+        del login_session['provider']
+        flash("You have successfully been logged out.")
+        return redirect(url_for('providers'))
+    else:
+        flash("You were not logged in")
+        return redirect(url_for('providers'))
+
+
+# ------------------- GOOGLE LOGOUT -------------------------
+
+
 # create G-disconnect
 # revoke a current user's token and reset their login_session
 @app.route('/gdisconnect')
@@ -187,21 +289,27 @@ def gdisconnect():
     result = h.request(url, 'GET')[0]
 
     if result['status'] == '200':
-        # reset the user login_session
-        del login_session['access_token']
-        del login_session['gplus_id']
-        del login_session['username']
-        del login_session['email']
-        del login_session['picture']
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
-        flash("You have been successfully logged out! ")
-        return redirect(url_for('providers'))
+        return response
     else:
         response = make_response(
             json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
+
+
+# ------------------- FACEBOOK LOGOUT -------------------------
+@app.route('/fbdisconnect')
+def fbdisconnect():
+    facebook_id = login_session['facebook_id']
+    # The access token must me included to successfully logout
+    access_token = login_session['access_token']
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (
+        facebook_id, access_token)
+    h = httplib2.Http()
+    result = h.request(url, 'DELETE')[1]
+    return "you have been logged out"
 
 
 # ------------------- JSON | API Endpoint -------------------------
@@ -229,14 +337,14 @@ def courseJSON(provider_name, course_id):
 # view home page
 @app.route('/')
 @app.route('/providers')
-def providers():    
+def providers():
     # Get all providers
     all_providers = session.query(Provider).all()
 
     # Get the latest 10 courses along with each course provider
     latest_courses = session.query(
-        Provider.name.label('provider_name'),
-        Course.name.label('course_name'), Course.id.label('course_id')).filter(
+        Provider.name.label('provider_name'), Course.name.label('course_name'),
+        Course.id.label('course_id')).filter(
             Course.provider_id == Provider.id).order_by(
                 Course.id.desc()).limit(10)
     # render Home page
@@ -254,9 +362,9 @@ def viewProvider(provider_name):
     provider = session.query(Provider).filter_by(name=provider_name).one()
     # courses = session.query(Course).filter_by(provider_id=provider.id).all()
     courses = session.query(
-        Course.name.label('name'), User.name.label('user_name'), Course.id.label('id')).filter(
-            Course.user_id == User.id,
-            Course.provider_id == provider.id).all()
+        Course.name.label('name'), User.name.label('user_name'),
+        Course.id.label('id')).filter(Course.user_id == User.id,
+                                      Course.provider_id == provider.id).all()
 
     # render MOOC provider page
     return render_template(
@@ -271,9 +379,9 @@ def viewProvider(provider_name):
 def viewCourse(provider_name, course_id):
     course = session.query(Course).filter_by(id=course_id).one()
     course = session.query(
-        Course.id.label('id'), Course.name.label('name'), Course.description, Course.link, Course.user_id, User.name.label('user_name')).filter(
-            Course.user_id == User.id,
-            Course.id == course_id).one()
+        Course.id.label('id'), Course.name.label('name'), Course.description,
+        Course.link, Course.user_id, User.name.label('user_name')).filter(
+            Course.user_id == User.id, Course.id == course_id).one()
 
     # render course provider page
     return render_template(
@@ -331,8 +439,7 @@ def editCourse(provider_name, course_id):
         flash("You are not allowed to edit this course!")
         return redirect(
             url_for(
-                'viewCourse',
-                provider_name=provider_name,
+                'viewCourse', provider_name=provider_name,
                 course_id=course_id))
 
     if request.method == 'POST':
@@ -381,8 +488,7 @@ def deleteCourse(provider_name, course_id):
         # redirect to course page
         return redirect(
             url_for(
-                'viewCourse',
-                provider_name=provider_name,
+                'viewCourse', provider_name=provider_name,
                 course_id=course_id))
 
     if request.method == 'POST':

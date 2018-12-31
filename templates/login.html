@@ -39,7 +39,7 @@
                     // return a successful login message to the user
                     // then redierect to the providers main page after 4 seconds
                     if (result) {
-                        $('#result').html('Login Successful!</br>' + result + '</br><img class="dot-img" src="static/images/Ellipsis-1.8s-200px.gif">')
+                        $('#g-result').html('Login Successful!</br>' + result + '</br><img class="dot-img" src="static/images/Ellipsis-1.8s-200px.gif">')
                         setTimeout(function () {
                             window.location.href = "/providers";
                         }, 4000);
@@ -47,7 +47,7 @@
                     } else if (auth_result['error']) {
                         console.log('There was an error: ' + auth_result['error']);
                     } else {
-                        $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                        $('#g-result').html('Failed to make a server-side call. Check your configuration and console.');
                     }
                 }
 
@@ -78,12 +78,13 @@
     }(document, 'script', 'facebook-jssdk'));
     // Here we run a very simple test of the Graph API after login is
     // successful.  See statusChangeCallback() for when this call is made.
-    function sendTokenToServer() {
-        var access_token = FB.getAuthResponse()['accessToken'];
+    function sendTokenToServer() {       
+        var access_token = FB.getAuthResponse()['accessToken'];        
         console.log(access_token)
         console.log('Welcome!  Fetching your information.... ');
         FB.api('/me', function (response) {
             console.log('Successful login for: ' + response.name);
+            $('#fbSigninButton').attr('style', 'display: none');
             $.ajax({
                 type: 'POST',
                 url: '/fbconnect?state={{STATE}}',
@@ -93,13 +94,13 @@
                 success: function (result) {
                     // Handle or verify the server response if necessary.
                     if (result) {
-                        $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
+                        $('#fb-result').html('Login Successful!</br>' + result + '</br><img class="dot-img" src="static/images/Ellipsis-1.8s-200px.gif">')
                         setTimeout(function () {
-                            window.location.href = "/restaurant";
+                            window.location.href = "/providers";
                         }, 4000);
 
                     } else {
-                        $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                        $('#fb-result').html('Failed to make a server-side call. Check your configuration and console.');
                     }
                 }
 
@@ -135,20 +136,22 @@
                 </div>
                 <!-- END HOLD GOOGLE SIGN IN BUTTON -->
             </div>
-            <div class="result" id="result"></div>
+            <div class="result" id="g-result"></div>
         </div>
 
         <div class="login-content">
             <div class="login-text">
                 <h3 class="login-title">FACEBOOK SIGN IN </h3>
                 <!-- HOLD FACEBOOK SIGN IN BUTTON -->
-                <fb:login-button data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="false"
-                    data-auto-logout-link="false" data-use-continue-as="false" scope="public_profile,email" onlogin="sendTokenToServer();">
-                    <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
-                </fb:login-button>
+                <div id="fbSigninButton">
+                    <fb:login-button data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="false"
+                        data-auto-logout-link="false" data-use-continue-as="false" scope="public_profile,email" onlogin="sendTokenToServer();">
+                        <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
+                    </fb:login-button>
+                </div>
                 <!-- END HOLD FACEBOOK SIGN IN BUTTON -->
             </div>
-            <div class="result" id="result"></div>
+            <div class="result" id="fb-result"></div>
         </div>
 
 

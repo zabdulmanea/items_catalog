@@ -29,7 +29,7 @@
                         <a href="{{ url_for('viewLogin') }}">Login</a>
                         {% else %}
                         <span class="logged-user">Hello, {{ login_session['username'] }}</span>
-                        <a href="{{ url_for('gdisconnect') }}">Logout</a>
+                        <a href="{{ url_for('disconnect') }}">Logout</a>
 
                         {% endif %}
                     
