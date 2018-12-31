@@ -23,6 +23,7 @@ class Provider(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False, unique=True)
     description = Column(String(250))
+    link = Column(String(250))
 
     @property
     def serialize(self):
@@ -31,6 +32,7 @@ class Provider(Base):
             'name': self.name,
             'description': self.description,
             'id': self.id,
+            'link': self.link,
         }
 
 

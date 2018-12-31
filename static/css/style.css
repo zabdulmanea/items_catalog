@@ -333,14 +333,20 @@ button, input[type="submit"], input[type="reset"] {
     display: inline;
 }
 
-.user-course-link a {
+.user-course-link a, .provider-link a {
     background: none;
     border: none;
     color: green;
     padding:0px;
 }
 
-.course-description {
+.provider-link {
+    text-align: right;
+    font-size: 13px;
+    margin: 0;
+    padding:0 5px 0 5px;
+}
+.course-description, .provider-description {
     margin-left: 0px;
     margin-bottom: 0px;
 }
