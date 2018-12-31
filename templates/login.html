@@ -39,7 +39,7 @@
                     // return a successful login message to the user
                     // then redierect to the providers main page after 4 seconds
                     if (result) {
-                        $('#g-result').html('Login Successful!</br>' + result + '</br><img class="dot-img" src="static/images/Ellipsis-1.8s-200px.gif">')
+                        $('#g-result').html('Login Successful!</br>' + result + '</br>')
                         setTimeout(function () {
                             window.location.href = "/providers";
                         }, 4000);
@@ -94,7 +94,7 @@
                 success: function (result) {
                     // Handle or verify the server response if necessary.
                     if (result) {
-                        $('#fb-result').html('Login Successful!</br>' + result + '</br><img class="dot-img" src="static/images/Ellipsis-1.8s-200px.gif">')
+                        $('#fb-result').html('Login Successful!</br>' + result + '</br>')
                         setTimeout(function () {
                             window.location.href = "/providers";
                         }, 4000);
