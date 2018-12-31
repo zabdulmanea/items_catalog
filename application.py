@@ -157,16 +157,7 @@ def gconnect():
     # store user id in login_session
     login_session['user_id'] = user_id
 
-    # view succeful login message
-    output = ''
-    output += '<h2>Welcome, '
-    output += login_session['username']
-    output += '!</h2>'
-    output += '<img class="login_pic" src="'
-    output += login_session['picture']
-    output += '"<br>'
-    flash("You are now logged in as %s" % login_session['username'])
-    return output
+    return loginSuccefulMessage(login_session)
 
 
 # ------------------- FACEBOOK SIGNIN -------------------------
@@ -232,6 +223,13 @@ def fbconnect():
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
 
+    return loginSuccefulMessage(login_session)
+
+
+# -------------------  LOGIN MESSAGE -------------------------
+
+
+def loginSuccefulMessage(login_session):
     # view succeful login message
     output = ''
     output += '<h2>Welcome, '
