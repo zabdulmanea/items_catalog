@@ -9,11 +9,11 @@ Item Catalog is a data-driven web application that provides a list of courses wi
 
 ## Technologies Used
 
-**Flask framework:** provides app routes to serve the HTTP endpoints and renders template to build the front-end pages
-**OAuth:** implements Google/Facebook Login authentication and authorization systems for users
-**SQLAlchemy:** communicating with the back-end database
-**CRUD operations:** Manipulating database (Create, Read, Update and Delete)
-**RESTful API endpoints:** return JSON files
+* **Flask framework:** provides app routes to serve the HTTP endpoints and renders template to build the front-end pages
+* **OAuth:** implements Google/Facebook Login authentication and authorization systems for users
+* **SQLAlchemy:** communicating with the back-end database
+* **CRUD operations:** Manipulating database (Create, Read, Update and Delete)
+* **RESTful API endpoints:** return JSON files
 
 
 ## Files Included
