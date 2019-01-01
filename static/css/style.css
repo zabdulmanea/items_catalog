@@ -327,7 +327,7 @@ button, input[type="submit"], input[type="reset"] {
     flex-direction: row;
     justify-content: space-between;
     margin: 0;
-    padding:0 5px 0 5px;
+    padding: 0 5px 0 5px;
 }
 
 .user-course-link a, .user-course-link h4 {
@@ -338,15 +338,16 @@ button, input[type="submit"], input[type="reset"] {
     background: none;
     border: none;
     color: green;
-    padding:0px;
+    padding: 0px;
 }
 
 .provider-link {
     text-align: right;
     font-size: 13px;
     margin: 0;
-    padding:0 5px 0 5px;
+    padding: 0 5px 0 5px;
 }
+
 .course-description, .provider-description {
     margin-left: 0px;
     margin-bottom: 0px;
