@@ -241,7 +241,7 @@ def getUserID(email):
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
-    except:
+    except Exception:
         return None
 
 
@@ -338,15 +338,13 @@ def gconnect():
     answer = requests.get(userinfo_url, params=params)
 
     data = answer.json()
-    print data
-    print answer
 
     # store user information in login_session
     # check if the user has a name or instead set the email
     if 'name' in data:
         login_session['username'] = data['name']
-    else:        
-        login_session['username'] = data['email'].split("@",1)[0]
+    else:
+        login_session['username'] = data['email'].split("@", 1)[0]
 
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
@@ -465,7 +463,8 @@ def gdisconnect():
         return response
 
     # revoking token using google url
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']  # NOQA
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session[  # NOQA
+        'access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
 
