@@ -1,6 +1,6 @@
 # Web Server modules
-from flask import Flask, render_template, request
-from flask import redirect, url_for, flash, jsonify
+from flask import (Flask, render_template, request, redirect, url_for, flash,
+                   jsonify)
 
 # Database modules
 from sqlalchemy import create_engine
@@ -28,9 +28,14 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-# ------------------- JSON | API Endpoint -------------------------
+# ------------------- RESTFul API | JSON Endpoints -------------------------
 @app.route('/providers/JSON')
 def providersJSON():
+    """ View a collection of MOOC Providers information
+
+    Returns:
+        jsonfiy class with pure data of providers information
+    """
     providers = session.query(Provider).all()
     return jsonify(MOOCProviders=[p.serialize for p in providers])
 
@@ -38,6 +43,11 @@ def providersJSON():
 @app.route('/provider/<string:provider_name>/JSON')
 @app.route('/provider/<string:provider_name>/courses/JSON')
 def providerCoursesJSON(provider_name):
+    """ View a collection of courses information of a MOOC Provider
+
+    Returns:
+        jsonfiy class with pure data of courses information
+    """
     provider = session.query(Provider).filter_by(name=provider_name).one()
     courses = session.query(Course).filter_by(provider_id=provider.id).all()
     return jsonify(ProviderCourses=[c.serialize for c in courses])
@@ -45,15 +55,24 @@ def providerCoursesJSON(provider_name):
 
 @app.route('/provider/<string:provider_name>/course/<int:course_id>/JSON')
 def courseJSON(provider_name, course_id):
+    """ View a course information
+
+    Returns:
+        jsonfiy class with pure data of course information
+    """
     course = session.query(Course).filter_by(id=course_id).one()
     return jsonify(Course=course.serialize)
 
 
 # ------------------- APP PAGES -------------------------
-# view home page
 @app.route('/')
 @app.route('/providers')
 def providers():
+    """ Show the main page of the app
+
+    Returns:
+        HTML page to view all providers and the latest courses
+    """
     # Get all providers
     all_providers = session.query(Provider).all()
 
@@ -71,10 +90,17 @@ def providers():
         login_session=login_session)
 
 
-# view specific MOOC provider
 @app.route('/provider/<string:provider_name>/')
 @app.route('/provider/<string:provider_name>/courses/')
 def viewProvider(provider_name):
+    """ Show MOOC Provider Information from the database
+
+    Args:
+        provider_name (str): the MOOC provider name
+
+    Returns:
+        HTML page to view a provider information along with a list of courses
+    """
     provider = session.query(Provider).filter_by(name=provider_name).one()
     # courses = session.query(Course).filter_by(provider_id=provider.id).all()
     courses = session.query(
@@ -90,9 +116,17 @@ def viewProvider(provider_name):
         login_session=login_session)
 
 
-# view specific MOOC course
 @app.route('/provider/<string:provider_name>/course/<int:course_id>/')
 def viewCourse(provider_name, course_id):
+    """ Show Course Information from the database
+
+    Args:
+        provider_name (str): the MOOC provider name
+        course_id (int): the course id
+
+    Returns:
+        HTML page to view a course information
+    """
     course = session.query(Course).filter_by(id=course_id).one()
     course = session.query(
         Course.id.label('id'), Course.name.label('name'), Course.description,
@@ -107,9 +141,15 @@ def viewCourse(provider_name, course_id):
         login_session=login_session)
 
 
-# create MOOC course
 @app.route('/provider/course/new/', methods=['GET', 'POST'])
 def newCourse():
+    """ Create a new course to the database
+
+    Returns:
+        on GET: HTML page to create a new course.
+                redirect to login page when the user is not signed in.
+        on POST: redirect to the main page after course has been created.
+    """
     if 'user_id' not in login_session:
         return redirect(url_for('viewLogin'))
 
@@ -138,11 +178,22 @@ def newCourse():
             login_session=login_session)
 
 
-# update information of MOOC course
 @app.route(
     '/provider/<string:provider_name>/course/<int:course_id>/edit/',
     methods=['GET', 'POST'])
 def editCourse(provider_name, course_id):
+    """ Update a course information from the database
+
+    Args:
+        provider_name (str): the MOOC provider name
+        course_id (int): the course id
+
+    Returns:
+        on GET: HTML page to Update the course.
+                redirect to login page when the user is not signed in.
+                redirect to course page when the user is not authorized to edit
+        on POST: redirect to course page after course has been updated.
+    """
     # check if the user is not logged in
     if 'user_id' not in login_session:
         return redirect(url_for('viewLogin'))
@@ -188,11 +239,22 @@ def editCourse(provider_name, course_id):
             login_session=login_session)
 
 
-# delete specific MOOC course
 @app.route(
     '/provider/<string:provider_name>/course/<int:course_id>/delete/',
     methods=['GET', 'POST'])
 def deleteCourse(provider_name, course_id):
+    """ Delete a course from the database
+
+    Args:
+        provider_name (str): the MOOC provider name
+        course_id (int): the course id
+
+    Returns:
+        on GET: HTML page to Delete the course.
+                redirect to login page when the user is not signed in.
+                redirect to course page when the user is not authorized to edit
+        on POST: redirect to the provider page after course has been deleted.
+    """
     # check if the user is not logged in
     if 'user_id' not in login_session:
         return redirect(url_for('viewLogin'))
@@ -225,8 +287,16 @@ def deleteCourse(provider_name, course_id):
 
 
 # ------------------- USER Functions -------------------------
-# create a new user in the datbase then obtain the user id
 def newUser(login_session):
+    """ Create a new user in the database
+
+    Args:
+        login_session (object): session object with user data
+
+    Returns:
+        user.id (int): generated an integer value identifying
+        the newly created user.
+    """
     new_user = User(
         name=login_session['username'],
         email=login_session['email'],
@@ -238,6 +308,15 @@ def newUser(login_session):
 
 
 def getUserID(email):
+    """ Obtain the user id from the database
+
+    Args:
+        email (str): the user email which obtained from login_session object
+
+    Returns:
+        user.id (int): if the user registered in the database
+        None: if no user info registered in the database
+    """
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
@@ -248,9 +327,13 @@ def getUserID(email):
 # ------------------- LOGIN -------------------------
 
 
-# Make nti-forgery state token and view login page
 @app.route('/login')
 def viewLogin():
+    """ Make anti-forgery state token and view login page
+
+    Returns:
+        Login page to sign in with google or facebook
+    """
     # generate a random anti-forgery state token mixed of letters and digits
     state_token = ''.join(
         random.choice(string.ascii_uppercase + string.digits)
@@ -269,10 +352,14 @@ CLIENT_ID = json.loads(open('client_secrets.json',
                             'r').read())['web']['client_id']
 
 
-# Create G-connect that accepts one-time code
-# and handle the code sent back from the callback method
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
+    """ Create G-connect that accepts one-time code
+    and handle the code sent back from the callback method
+
+    Returns:
+        login response message and create login session object
+    """
     # ensure the user is making the request by validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -356,6 +443,11 @@ def gconnect():
 # ------------------- FACEBOOK SIGNIN -------------------------
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
+    """ Create Facebook connect that accepts one-time code
+
+    Returns:
+        login response message and create login session object
+    """
     # ensure the user is making the request by validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -403,6 +495,14 @@ def fbconnect():
 
 # -------------------  SUCCESSFULL LOGIN MESSAGE -------------------------
 def loginSuccefulMessage(login_session):
+    """ Show login response after user successfully logged in
+
+    Args:
+        login_session (object): session object with user data
+
+    Returns:
+        message (str): Login Successful message
+    """
     # see if user exists, if it doesn't make a new one
     user_id = getUserID(login_session['email'])
     if not user_id:
@@ -428,6 +528,12 @@ def loginSuccefulMessage(login_session):
 # Disconnect based on provider
 @app.route('/disconnect')
 def disconnect():
+    """ delete the user data from the login session object
+
+    Returns:
+        redirect to the main page after deleting the user data
+        from the login session
+    """
     if 'provider' in login_session:
         if login_session['provider'] == 'google':
             gdisconnect()
@@ -451,10 +557,14 @@ def disconnect():
 # ------------------- GOOGLE LOGOUT -------------------------
 
 
-# create G-disconnect
-# revoke a current user's token and reset their login_session
 @app.route('/gdisconnect')
 def gdisconnect():
+    """ Create G-disconnect by revoking a current user's token
+    and resetting their login_session
+
+    Returns:
+        redirect G-disconnect response
+    """
     # execute HTTP request to revoke current token
     access_token = login_session.get('access_token')
     if access_token is None:
@@ -478,6 +588,8 @@ def gdisconnect():
 # ------------------- FACEBOOK LOGOUT -------------------------
 @app.route('/fbdisconnect')
 def fbdisconnect():
+    """ Revoking a current user's token and resetting their login_session
+    """
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']

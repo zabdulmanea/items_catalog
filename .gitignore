@@ -1,2 +1,4 @@
 MOOCProviders.py
 MOOCCourses.py
+.vscode
+database_setup.pyc
