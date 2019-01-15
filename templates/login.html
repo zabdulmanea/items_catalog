@@ -57,59 +57,6 @@
 </script>
 <!-- END MAKE A SIGNIN Callback METHOD -->
 
-<!-- HANDLE FACEBOOK SIGN IN -->
-<script>
-    window.fbAsyncInit = function () {
-        FB.init({
-            appId: '333132153980983',
-            cookie: true,  // enable cookies to allow the server to access 
-            // the session
-            xfbml: true,  // parse social plugins on this page
-            version: 'v2.2' // use version 2.2
-        });
-    };
-    // Load the SDK asynchronously
-    (function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-    // Here we run a very simple test of the Graph API after login is
-    // successful.  See statusChangeCallback() for when this call is made.
-    function sendTokenToServer() {       
-        var access_token = FB.getAuthResponse()['accessToken'];        
-        console.log(access_token)
-        console.log('Welcome!  Fetching your information.... ');
-        FB.api('/me', function (response) {
-            console.log('Successful login for: ' + response.name);
-            $('#fbSigninButton').attr('style', 'display: none');
-            $.ajax({
-                type: 'POST',
-                url: '/fbconnect?state={{STATE}}',
-                processData: false,
-                data: access_token,
-                contentType: 'application/octet-stream; charset=utf-8',
-                success: function (result) {
-                    // Handle or verify the server response if necessary.
-                    if (result) {
-                        $('#fb-result').html('Login Successful!</br>' + result + '</br>')
-                        setTimeout(function () {
-                            window.location.href = "/providers";
-                        }, 4000);
-
-                    } else {
-                        $('#fb-result').html('Failed to make a server-side call. Check your configuration and console.');
-                    }
-                }
-
-            });
-        });
-    }
-</script>
-<!-- END HANDLE FACEBOOK SIGN IN -->
-
 {% endblock %}
 
 {% block content %}
@@ -138,22 +85,6 @@
             </div>
             <div class="result" id="g-result"></div>
         </div>
-
-        <div class="login-content">
-            <div class="login-text">
-                <h3 class="login-title">FACEBOOK SIGN IN </h3>
-                <!-- HOLD FACEBOOK SIGN IN BUTTON -->
-                <div id="fbSigninButton">
-                    <fb:login-button data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="false"
-                        data-auto-logout-link="false" data-use-continue-as="false" scope="public_profile,email" onlogin="sendTokenToServer();">
-                        <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
-                    </fb:login-button>
-                </div>
-                <!-- END HOLD FACEBOOK SIGN IN BUTTON -->
-            </div>
-            <div class="result" id="fb-result"></div>
-        </div>
-
 
     </div>
 
