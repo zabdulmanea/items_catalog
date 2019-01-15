@@ -22,7 +22,7 @@ class Provider(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False, unique=True)
-    description = Column(String(250))
+    description = Column(String(500))
     link = Column(String(250))
 
     @property
@@ -42,7 +42,7 @@ class Course(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
-    description = Column(String(250))
+    description = Column(String(500))
     link = Column(String(250))
     provider_id = Column(Integer, ForeignKey('provider.id'))
     provider = relationship(Provider)
