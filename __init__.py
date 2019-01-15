@@ -348,7 +348,7 @@ def viewLogin():
 
 # GConnect CLIENT_ID
 # declare CLIENT_ID using client_secrets file
-CLIENT_ID = json.loads(open('client_secrets.json',
+CLIENT_ID = json.loads(open('/var/www/catalog/catalog/client_secrets.json',
                             'r').read())['web']['client_id']
 
 
@@ -371,7 +371,7 @@ def gconnect():
 
     try:
         # exchange the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets('/var/www/catalog/catalog/client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
