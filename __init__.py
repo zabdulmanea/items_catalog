@@ -440,59 +440,6 @@ def gconnect():
     return loginSuccefulMessage(login_session)
 
 
-# ------------------- FACEBOOK SIGNIN -------------------------
-@app.route('/fbconnect', methods=['POST'])
-def fbconnect():
-    """ Create Facebook connect that accepts one-time code
-
-    Returns:
-        login response message and create login session object
-    """
-    # ensure the user is making the request by validate state token
-    if request.args.get('state') != login_session['state']:
-        response = make_response(json.dumps('Invalid state parameter.'), 401)
-        response.headers['Content-Type'] = 'application/json'
-        return response
-    access_token = request.data
-
-    # exchange the short-lived token for a long-lived token
-    app_id = json.loads(open('/var/www/catalog/catalog/fb_client_secrets.json',
-                             'r').read())['web']['app_id']
-    app_secret = json.loads(open('/var/www/catalog/catalog/fb_client_secrets.json',
-                                 'r').read())['web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (  # NOQA
-        app_id, app_secret, access_token)
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
-
-    token = result.split(',')[0].split(':')[1].replace('"', '')
-
-    # make API calls with the new token
-    url = 'https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email' % token  # NOQA
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
-
-    # populate the login_session
-    data = json.loads(result)
-    login_session['provider'] = 'facebook'
-    login_session['username'] = data["name"]
-    login_session['email'] = data["email"]
-    login_session['facebook_id'] = data["id"]
-
-    # The token must be stored in the login_session in order to properly logout
-    login_session['access_token'] = token
-
-    # Get user picture
-    url = 'https://graph.facebook.com/v2.8/me/picture?access_token=%s&redirect=0&height=200&width=200' % token  # NOQA
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
-    data = json.loads(result)
-
-    login_session['picture'] = data["data"]["url"]
-
-    return loginSuccefulMessage(login_session)
-
-
 # -------------------  SUCCESSFULL LOGIN MESSAGE -------------------------
 def loginSuccefulMessage(login_session):
     """ Show login response after user successfully logged in
@@ -539,9 +486,6 @@ def disconnect():
             gdisconnect()
             del login_session['gplus_id']
             del login_session['access_token']
-        if login_session['provider'] == 'facebook':
-            fbdisconnect()
-            del login_session['facebook_id']
         del login_session['username']
         del login_session['email']
         del login_session['picture']
@@ -584,19 +528,6 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-
-# ------------------- FACEBOOK LOGOUT -------------------------
-@app.route('/fbdisconnect')
-def fbdisconnect():
-    """ Revoking a current user's token and resetting their login_session
-    """
-    facebook_id = login_session['facebook_id']
-    # The access token must me included to successfully logout
-    access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (
-        facebook_id, access_token)
-    h = httplib2.Http()
-    h.request(url, 'DELETE')[1]
 
 
 # ------------------- Main -------------------------
