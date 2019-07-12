@@ -41,7 +41,7 @@ You are not required to run them.
 
 **3. Clone the project repository to vagrant directory**  
 * Change the directory to Linux vagrant directory `cd /vagrant`
-`git clone https://github.com/zabdulmanea/items_catalog.git `
+* Run `git clone https://github.com/zabdulmanea/items_catalog.git `
 
 **5. Run Python Module**
 * Change directory to the project directory:  
